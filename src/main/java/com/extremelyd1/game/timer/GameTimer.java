@@ -41,6 +41,7 @@ public class GameTimer {
      * Start this timer
      */
     public void start() {
+        this.cancel();
         runnable = new BukkitRunnable() {
             @Override
             public void run() {
