@@ -29,6 +29,8 @@ pregeneration-mode:
   chunks-per-cycle: 200
 pregame:
   border-radius: 20
+
+# new stuffs in fallen's fork
 auto-save-disabled: True
 spawn-locations-chunk-loading-radius: 0
 default-win-condition-is-quidditch: False

@@ -109,12 +109,14 @@ public class Config {
     private final int preGameBorderRadius;
 
     /**
+     * [fallen's fork]
      * If autosave for all worlds should be disabled
      * - true: no lag from saving chunks, but chunks are hold in memory, causing memory to increase infinitely
      */
     private final boolean autoSaveDisabled;
 
     /**
+     * [fallen's fork]
      * Chunks in the given radius of the spawn location of each team will be force-loaded before the game start
      * radius == 0 means only the spawn location chunk will be loaded
      * radius == 1 means 3x3 chunks will be loaded
@@ -122,6 +124,7 @@ public class Config {
     private final int spawnLocationsChunkLoadingRadius;
 
     /**
+     * [fallen's fork]
      * A variant of the "line" mode
      * Any team completing given lines ends the game, but the winner is the team who collect the most items
      */
@@ -185,6 +188,7 @@ public class Config {
 
         preGameBorderRadius = config.getInt("pregame.border-radius");
 
+        // fallen's fork
         autoSaveDisabled = config.getBoolean("auto-save-disabled");
         spawnLocationsChunkLoadingRadius = config.getInt("spawn-locations-chunk-loading-radius");
         defaultWinConditionIsQuidditch = config.getBoolean("default-win-condition-is-quidditch");
@@ -313,14 +317,17 @@ public class Config {
         return preGameBorderRadius;
     }
 
+    // fallen's fork
     public boolean isAutoSaveDisabled() {
         return autoSaveDisabled;
     }
 
+      // fallen's fork: add "quidditch" mode
     public int getSpawnLocationsChunkLoadingRadius() {
         return spawnLocationsChunkLoadingRadius;
     }
 
+    // fallen's fork
     public boolean isDefaultWinConditionIsQuidditch() {
         return defaultWinConditionIsQuidditch;
     }

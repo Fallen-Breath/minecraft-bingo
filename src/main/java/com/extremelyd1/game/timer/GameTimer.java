@@ -41,7 +41,9 @@ public class GameTimer {
      * Start this timer
      */
     public void start() {
+        // fallen's fork: fix double timer
         this.cancel();
+
         runnable = new BukkitRunnable() {
             @Override
             public void run() {

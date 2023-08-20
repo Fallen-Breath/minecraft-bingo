@@ -53,7 +53,7 @@ public class WinConditionCommand implements CommandExecutor {
             game.onPregameUpdate();
 
             return true;
-        } else if (args[0].equalsIgnoreCase("lines") || args[0].equalsIgnoreCase("quidditch")) {
+        } else if (args[0].equalsIgnoreCase("lines") || args[0].equalsIgnoreCase("quidditch")) {  // fallen's fork: add "quidditch" mode
             if (args.length < 2) {
                 sender.sendMessage(
                         ChatColor.DARK_RED + "Error: "
@@ -88,6 +88,7 @@ public class WinConditionCommand implements CommandExecutor {
                 return true;
             }
 
+            // fallen's fork: add "quidditch" mode
             game.getWinConditionChecker().setNumLinesToComplete(numLines, args[0].equalsIgnoreCase("quidditch"));
 
             Bukkit.broadcastMessage(

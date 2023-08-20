@@ -3,6 +3,13 @@ Item bingo in Minecraft
 
 ![Item Bingo](https://i.imgur.com/7qXBAQK.png)
 
+## Changes in fallen's fork
+
+- Add config `auto-save-disabled`
+- Add config `spawn-locations-chunk-loading-radius`
+- Add a "line" mode variant: "quidditch" mode
+- Fix double timer running by entering double `/start` and double game starting
+
 ## What is minecraft bingo?
 Minecraft Bingo is a gamemode in Minecraft in which teams battle in order to collect items on their bingo card.
 The first team to reach a completed row, column or diagonal wins the game.

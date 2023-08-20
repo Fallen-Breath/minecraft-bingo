@@ -168,11 +168,12 @@ public class SpawnLoader implements Listener {
         // Register this class as event listener
         Bukkit.getPluginManager().registerEvents(this, this.game.getPlugin());
 
-        int r = this.game.getConfig().getSpawnLocationsChunkLoadingRadius();
+        int r = this.game.getConfig().getSpawnLocationsChunkLoadingRadius();  // fallen's fork
 
         for (Location location : this.locations) {
             Chunk center = this.world.getChunkAt(location);
 
+            // fallen's fork: load more chunks
             for (int x = center.getX() - r; x <= center.getX() + r; x++) {
                 for (int z = center.getZ() - r; z <= center.getZ() + r; z++) {
                     // Get chunk associated with the location

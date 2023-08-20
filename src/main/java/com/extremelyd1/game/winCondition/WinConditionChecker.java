@@ -58,6 +58,7 @@ public class WinConditionChecker {
         }
 
         if (hasBingo(card, team)) {
+            // fallen's fork: add "quidditch" mode
             if (isQuidditchMode()) {  // Quidditch Line
                 WinReason reason = this.decideWinner(allTeams);
                 if (reason.getReason() == WinReason.Reason.COMPLETE) {
