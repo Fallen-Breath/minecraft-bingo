@@ -131,6 +131,12 @@ public class Game {
      */
     private final ChatChannelController chatChannelController;
 
+    /**
+     * Adding another "STARTING_GAME" state in {@link State} is too heavy,
+     * so here's a not-elegant workround -- flag
+     */
+    private boolean gameStarting = false;
+
     public Game(Bingo bingo) throws IllegalArgumentException {
         Game.logger = bingo.getLogger();
 
@@ -248,6 +254,19 @@ public class Game {
 
             return;
         }
+        if (this.gameStarting) {
+            getLogger().warning("Game is starting, please be patient");
+
+            if (player != null) {
+                player.sendMessage(
+                        ChatColor.DARK_RED + "Error: "
+                                + ChatColor.WHITE + "Game is starting, please be patient"
+                );
+            }
+
+            return;
+        }
+        this.gameStarting = true;
 
         // Calculate radius of spawn circle based on whether a border is enabled
         int radius;
@@ -286,6 +305,7 @@ public class Game {
                     }
 
                     this.state = State.IN_GAME;
+                    this.gameStarting = false;
 
                     // Create random bingo card
                     bingoCard = new BingoCard(bingoItemMaterials.pickMaterials(), winConditionChecker.getCompletionsToLock());
