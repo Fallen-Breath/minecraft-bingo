@@ -62,7 +62,9 @@ public class WorldManager {
      * Sets the world border in all dimensions
      */
     private void initialize() {
-        world.setAutoSave(false);
+        if (this.game.getConfig().isAutoSaveDisabled()) {
+            world.setAutoSave(false);
+        }
         if (nether != null) {
             nether.setAutoSave(false);
             nether.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);

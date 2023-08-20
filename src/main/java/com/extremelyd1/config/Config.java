@@ -108,6 +108,12 @@ public class Config {
      */
     private final int preGameBorderRadius;
 
+    /**
+     * If autosave for all worlds should be disabled
+     * - true: no lag from saving chunks, but chunks are hold in memory, causing memory to increase infinitely
+     */
+    private final boolean autoSaveDisabled;
+
     public Config(JavaPlugin plugin) throws IllegalArgumentException {
         plugin.saveDefaultConfig();
         
@@ -165,6 +171,8 @@ public class Config {
         preGenerationChunksPerCycle = config.getInt("pregeneration-mode.chunks-per-cycle");
 
         preGameBorderRadius = config.getInt("pregame.border-radius");
+
+        autoSaveDisabled = config.getBoolean("auto-save-disabled");
     }
 
     /**
@@ -288,5 +296,9 @@ public class Config {
 
     public int getPreGameBorderRadius() {
         return preGameBorderRadius;
+    }
+
+    public boolean isAutoSaveDisabled() {
+        return autoSaveDisabled;
     }
 }

@@ -29,3 +29,4 @@ pregeneration-mode:
   chunks-per-cycle: 200
 pregame:
   border-radius: 20
+auto-save-disabled: True
