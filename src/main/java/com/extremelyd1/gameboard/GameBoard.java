@@ -146,7 +146,10 @@ public class GameBoard {
 
         // Handle plurality of 'lines'
         int numLines = winConditionChecker.getNumLinesToComplete();
-        return numLines + " Line" + (numLines == 1 ? "" : "s");
+
+        // fallen's fork: add "quidditch" mode
+        String type = winConditionChecker.isQuidditchMode() ? "Quidditch" : "Line";
+        return numLines + " " + type + (numLines == 1 ? "" : "s");
     }
 
 }

@@ -121,6 +121,12 @@ public class Config {
      */
     private final int spawnLocationsChunkLoadingRadius;
 
+    /**
+     * A variant of the "line" mode
+     * Any team completing given lines ends the game, but the winner is the team who collect the most items
+     */
+    private final boolean defaultWinConditionIsQuidditch;
+
     public Config(JavaPlugin plugin) throws IllegalArgumentException {
         plugin.saveDefaultConfig();
         
@@ -181,6 +187,7 @@ public class Config {
 
         autoSaveDisabled = config.getBoolean("auto-save-disabled");
         spawnLocationsChunkLoadingRadius = config.getInt("spawn-locations-chunk-loading-radius");
+        defaultWinConditionIsQuidditch = config.getBoolean("default-win-condition-is-quidditch");
     }
 
     /**
@@ -312,5 +319,9 @@ public class Config {
 
     public int getSpawnLocationsChunkLoadingRadius() {
         return spawnLocationsChunkLoadingRadius;
+    }
+
+    public boolean isDefaultWinConditionIsQuidditch() {
+        return defaultWinConditionIsQuidditch;
     }
 }

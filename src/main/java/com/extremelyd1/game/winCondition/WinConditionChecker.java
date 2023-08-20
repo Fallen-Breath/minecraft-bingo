@@ -32,10 +32,17 @@ public class WinConditionChecker {
      */
     private int completionsToLock;
 
+    /**
+     * A variant of the "line" mode
+     * Any team completing given lines ends the game, but the winner is the team who collect the most items
+     */
+    private boolean quidditchMode;
+
     public WinConditionChecker(Config config) {
         this.numLinesToComplete = config.getDefaultNumLinesComplete();
         this.fullCard = false;
         this.completionsToLock = 0;
+        this.quidditchMode = config.isDefaultWinConditionIsQuidditch();
     }
 
     /**
@@ -51,7 +58,14 @@ public class WinConditionChecker {
         }
 
         if (hasBingo(card, team)) {
-            return Collections.singletonList(team);
+            if (isQuidditchMode()) {  // Quidditch Line
+                WinReason reason = this.decideWinner(allTeams);
+                if (reason.getReason() == WinReason.Reason.COMPLETE) {
+                    return Collections.singletonList(reason.getTeam());
+                }
+            } else {  // Line
+                return Collections.singletonList(team);
+            }
         }
 
         return Collections.emptyList();
@@ -170,11 +184,7 @@ public class WinConditionChecker {
         return possibleNumCollected;
     }
 
-    /**
-     * Sets the number of lines to complete in order to win
-     * @param numLinesToComplete The number of lines to complete; must be between 1 (inclusive) and 10 (inclusive)
-     */
-    public void setNumLinesToComplete(int numLinesToComplete) {
+    public void setNumLinesToComplete(int numLinesToComplete, boolean quidditchMode) {
         if (numLinesToComplete < 1 || numLinesToComplete > 10) {
             throw new IllegalArgumentException("Cannot set number of lines completed to less than 1 or more than 10");
         }
@@ -182,16 +192,30 @@ public class WinConditionChecker {
         this.fullCard = false;
         this.completionsToLock = 0;
         this.numLinesToComplete = numLinesToComplete;
+        this.quidditchMode = quidditchMode;
+    }
+
+    /**
+     * Sets the number of lines to complete in order to win
+     * @param numLinesToComplete The number of lines to complete; must be between 1 (inclusive) and 10 (inclusive)
+     */
+    public void setNumLinesToComplete(int numLinesToComplete) {
+        this.setNumLinesToComplete(numLinesToComplete, false);
     }
 
     public int getNumLinesToComplete() {
         return numLinesToComplete;
     }
 
+    public boolean isQuidditchMode() {
+        return quidditchMode;
+    }
+
     public void setFullCard() {
         this.completionsToLock = 0;
         this.numLinesToComplete = 0;
         this.fullCard = true;
+        this.quidditchMode = false;
     }
 
     public boolean isFullCard() {
@@ -206,5 +230,6 @@ public class WinConditionChecker {
         this.fullCard = false;
         this.numLinesToComplete = 0;
         this.completionsToLock = completionsToLock;
+        this.quidditchMode = false;
     }
 }

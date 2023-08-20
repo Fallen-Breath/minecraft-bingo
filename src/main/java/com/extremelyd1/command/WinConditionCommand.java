@@ -53,7 +53,7 @@ public class WinConditionCommand implements CommandExecutor {
             game.onPregameUpdate();
 
             return true;
-        } else if (args[0].equalsIgnoreCase("lines")) {
+        } else if (args[0].equalsIgnoreCase("lines") || args[0].equalsIgnoreCase("quidditch")) {
             if (args.length < 2) {
                 sender.sendMessage(
                         ChatColor.DARK_RED + "Error: "
@@ -88,7 +88,7 @@ public class WinConditionCommand implements CommandExecutor {
                 return true;
             }
 
-            game.getWinConditionChecker().setNumLinesToComplete(numLines);
+            game.getWinConditionChecker().setNumLinesToComplete(numLines, args[0].equalsIgnoreCase("quidditch"));
 
             Bukkit.broadcastMessage(
                     Game.PREFIX + "Number of lines (rows, columns or diagonals) to achieve bingo has been set to "

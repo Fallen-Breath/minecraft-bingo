@@ -36,7 +36,7 @@ commands:
   wincondition:
     aliases: [wincon]
     description: Command to change win conditions, such as enabling full card mode
-    usage: /<command> <full|lines|lockout> [argument]
+    usage: /<command> <full|lines|quidditch|lockout> [argument]
 
   reroll:
     description: Command to reroll the bingo card
