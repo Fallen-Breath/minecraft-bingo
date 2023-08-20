@@ -30,3 +30,4 @@ pregeneration-mode:
 pregame:
   border-radius: 20
 auto-save-disabled: True
+spawn-locations-chunk-loading-radius: 0

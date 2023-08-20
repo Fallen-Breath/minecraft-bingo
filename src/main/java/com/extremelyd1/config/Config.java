@@ -114,6 +114,13 @@ public class Config {
      */
     private final boolean autoSaveDisabled;
 
+    /**
+     * Chunks in the given radius of the spawn location of each team will be force-loaded before the game start
+     * radius == 0 means only the spawn location chunk will be loaded
+     * radius == 1 means 3x3 chunks will be loaded
+     */
+    private final int spawnLocationsChunkLoadingRadius;
+
     public Config(JavaPlugin plugin) throws IllegalArgumentException {
         plugin.saveDefaultConfig();
         
@@ -173,6 +180,7 @@ public class Config {
         preGameBorderRadius = config.getInt("pregame.border-radius");
 
         autoSaveDisabled = config.getBoolean("auto-save-disabled");
+        spawnLocationsChunkLoadingRadius = config.getInt("spawn-locations-chunk-loading-radius");
     }
 
     /**
@@ -300,5 +308,9 @@ public class Config {
 
     public boolean isAutoSaveDisabled() {
         return autoSaveDisabled;
+    }
+
+    public int getSpawnLocationsChunkLoadingRadius() {
+        return spawnLocationsChunkLoadingRadius;
     }
 }

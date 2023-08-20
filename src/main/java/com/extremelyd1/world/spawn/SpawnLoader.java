@@ -168,18 +168,26 @@ public class SpawnLoader implements Listener {
         // Register this class as event listener
         Bukkit.getPluginManager().registerEvents(this, this.game.getPlugin());
 
+        int r = this.game.getConfig().getSpawnLocationsChunkLoadingRadius();
+
         for (Location location : this.locations) {
-            // Get chunk associated with the location
-            Chunk chunk = this.world.getChunkAt(location);
+            Chunk center = this.world.getChunkAt(location);
 
-            // Keep chunk loaded until starting is finished
-            chunk.setForceLoaded(true);
+            for (int x = center.getX() - r; x <= center.getX() + r; x++) {
+                for (int z = center.getZ() - r; z <= center.getZ() + r; z++) {
+                    // Get chunk associated with the location
+                    Chunk chunk = this.world.getChunkAt(location);
 
-            // Check if chunk is not already loaded
-            if (!chunk.isLoaded()) {
-                // Load the chunk and add to list to wait for its load
-                this.toBeLoadedChunks.add(chunk);
-                chunk.load();
+                    // Keep chunk loaded until starting is finished
+                    chunk.setForceLoaded(true);
+
+                    // Check if chunk is not already loaded
+                    if (!chunk.isLoaded()) {
+                        // Load the chunk and add to list to wait for its load
+                        this.toBeLoadedChunks.add(chunk);
+                        chunk.load();
+                    }
+                }
             }
         }
     }
