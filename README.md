@@ -49,9 +49,9 @@ The first time you run the plugin a config file will be generated in `<server>/p
 - `/pvp` Enable/disable PvP
 - `/maintenance` Enable maintenance mode (this will disallow all non-OP players from joining)
 - `/wincondition <full|lines|quidditch|lockout> [number]` Change the wincondition to either a full card, a number of lines (rows, columns or diagonals) to complete in order to win or lockout. 
-  In case of 'lines' or 'lockout' you can specify a number to indicate how many lines needed to be completed, or after how many collections an item locks.
-  'quidditch' is a special 'lines' mode, where any team completing given amount of lines ends the game, but the winner is the team who collect the most items.  
-  After given amount of lines are completed by any team, if there are multiple teams that have collected the most items, the game will not end.  
+  In case of 'lines' or 'lockout' you can specify a number to indicate how many lines needed to be completed, or after how many collections an item locks.  
+  'quidditch' is a special 'lines' mode, where any team completing given amount of lines ends the game, but the winner is the team who collect the most items.
+  After given amount of lines are completed by any team, if there are multiple teams that have collected the most items, the game will not end.
   In this case, the first team to collect more items than all the other teams will win immediately
   (alias: `/wincon`)
 - `/itemdistribution <S> <A> <B> <C> <D>` Change the item distribution scales, the number of S, A, B, C, and D tier items that appear on the bingo card. 
