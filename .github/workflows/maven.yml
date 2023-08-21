@@ -1,0 +1,49 @@
+name: Java CI with Maven
+
+on:
+  push:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+    - name: Cache
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.m2/repository
+          ./BuildTools-spigot
+          ./BuildTools-craftbukkit
+        key: ${{ runner.os }}-gradle-${{ hashFiles('pom.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-maven-
+    
+    # TODO: non-hardcoded mc version
+    - name: Run BuildTools for spigot
+      run: |
+        mkdir -p BuildTools-spigot && cd BuildTools-spigot
+        curl https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar -o BuildTools.jar
+        java -jar BuildTools.jar --rev 1.20.1 --remapped --compile-if-changed
+        rm -rf nms.old.*
+    - name: Run BuildTools for craftbukkit
+      run: |
+        mkdir -p BuildTools-craftbukkit && cd BuildTools-craftbukkit
+        curl https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar -o BuildTools.jar
+        java -jar BuildTools.jar --rev 1.20.1 --remapped --compile craftbukkit --compile-if-changed
+        rm -rf nms.old.*
+    
+    - name: Build with Maven
+      run: mvn --batch-mode --update-snapshots package
+      
+    - name: Upload plugin
+      uses: actions/upload-artifact@v3
+      with:
+        name: build-artifacts
+        path: target/MinecraftBingo-*.jar
