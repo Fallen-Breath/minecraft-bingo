@@ -68,11 +68,15 @@ public class WorldManager {
         }
 
         if (nether != null) {
-            nether.setAutoSave(false);
+            if (this.game.getConfig().isAutoSaveDisabled()) {
+                nether.setAutoSave(false);
+            }
             nether.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
         }
         if (end != null) {
-            end.setAutoSave(false);
+            if (this.game.getConfig().isAutoSaveDisabled()) {
+                end.setAutoSave(false);
+            }
             end.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
         }
 
