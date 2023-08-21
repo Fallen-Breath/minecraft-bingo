@@ -89,6 +89,11 @@ public class GameBoardManager {
                     ingameBoard.updateWinningTeam(leadingTeam);
                 }
             }
+
+            // fallen's fork: add "quidditch" mode
+            for (IngameBoard ingameBoard : ingameBoards.values()) {
+                ingameBoard.updateSuddenDeath(game);
+            }
         }
     }
 

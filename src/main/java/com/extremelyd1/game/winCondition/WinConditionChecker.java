@@ -72,6 +72,15 @@ public class WinConditionChecker {
         return Collections.emptyList();
     }
 
+    public boolean IsInSuddenDeath(BingoCard card, Iterable<PlayerTeam> allTeams) {
+        for (PlayerTeam team : allTeams) {
+            if (hasBingo(card, team)) {
+                return this.decideWinner(allTeams).getReason() != WinReason.Reason.COMPLETE;
+            }
+        }
+        return false;
+    }
+
     /**
      * Checks whether there is a winner in the 'lockout' game type
      * @param card The bingo card to check

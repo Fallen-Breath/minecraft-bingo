@@ -149,7 +149,10 @@ public class GameBoard {
 
         // fallen's fork: add "quidditch" mode
         String type = winConditionChecker.isQuidditchMode() ? "Quidditch" : "Line";
-        return numLines + " " + type + (numLines == 1 ? "" : "s");
+        if (numLines > 1 && "Line".equals(type)) {
+            type += "s";
+        }
+        return numLines + " " + type;
     }
 
 }

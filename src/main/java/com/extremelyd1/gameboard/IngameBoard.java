@@ -33,6 +33,13 @@ public class IngameBoard extends GameBoard {
      */
     private final DynamicBoardEntry<String> winningTeamEntry;
 
+    /**
+     * fallen's fork: add "quidditch"
+     * The entry representing if the game is in "sudden death" staet
+     * Available in "quidditch" mode only
+     */
+    private final DynamicBoardEntry<String> suddenDeathEntry;
+
     public IngameBoard(Game game, Team team) {
         super(game);
 
@@ -83,9 +90,18 @@ public class IngameBoard extends GameBoard {
             this.boardEntries.add(new BoardEntry("Leading team:"));
             winningTeamEntry = new DynamicBoardEntry<>("  %s", ChatColor.GRAY + "Tie");
             this.boardEntries.add(winningTeamEntry);
-            this.boardEntries.add(new BlankBoardEntry(numberOfSpaces));
+            this.boardEntries.add(new BlankBoardEntry(numberOfSpaces++));
         } else {
             winningTeamEntry = null;
+        }
+
+        // fallen's fork: add "quidditch" mode
+        if (game.getWinConditionChecker().isQuidditchMode()) {
+            suddenDeathEntry = new DynamicBoardEntry<>("In Sudden Death: %s", ChatColor.GRAY + "NO");
+            this.boardEntries.add(suddenDeathEntry);
+            this.boardEntries.add(new BlankBoardEntry(numberOfSpaces++));
+        } else {
+            suddenDeathEntry = null;
         }
     }
 
@@ -123,6 +139,18 @@ public class IngameBoard extends GameBoard {
         } else {
             winningTeamEntry.setValue(team.getColor() + team.getName());
         }
+
+        super.update();
+    }
+
+    // fallen's fork: add "quidditch" mode
+    public void updateSuddenDeath(Game game) {
+        if (suddenDeathEntry == null) {
+            return;
+        }
+
+        boolean bl = game.getWinConditionChecker().IsInSuddenDeath(game.getBingoCard(), game.getTeamManager().getActiveTeams());
+        suddenDeathEntry.setValue(bl ? ChatColor.RED + "YES" : ChatColor.GRAY + "NO");
 
         super.update();
     }
