@@ -137,7 +137,7 @@ public class IngameBoard extends GameBoard {
         if (team == null) {
             winningTeamEntry.setValue(ChatColor.GRAY + "Tie");
         } else {
-            winningTeamEntry.setValue(team.getColor() + team.getName());
+            winningTeamEntry.setValue(team.getColor() + team.getName() + ChatColor.GRAY + " (" + team.getNumCollected() + "x items)");
         }
 
         super.update();
