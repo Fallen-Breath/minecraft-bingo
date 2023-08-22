@@ -3,6 +3,7 @@ package com.extremelyd1.gameboard;
 import com.extremelyd1.game.Game;
 import com.extremelyd1.game.team.PlayerTeam;
 import com.extremelyd1.game.team.Team;
+import com.extremelyd1.game.winCondition.WinConditionChecker;
 import com.extremelyd1.gameboard.boardEntry.BlankBoardEntry;
 import com.extremelyd1.gameboard.boardEntry.BoardEntry;
 import com.extremelyd1.gameboard.boardEntry.DynamicBoardEntry;
@@ -129,7 +130,7 @@ public class IngameBoard extends GameBoard {
      * Updates this board with the currently winning team
      * @param team The currently winning team
      */
-    public void updateWinningTeam(PlayerTeam team) {
+    public void updateWinningTeam(PlayerTeam team, WinConditionChecker winConditionChecker) {
         if (winningTeamEntry == null) {
             return;
         }
@@ -137,7 +138,11 @@ public class IngameBoard extends GameBoard {
         if (team == null) {
             winningTeamEntry.setValue(ChatColor.GRAY + "Tie");
         } else {
-            winningTeamEntry.setValue(team.getColor() + team.getName() + ChatColor.GRAY + " (" + team.getNumCollected() + "x items)");
+            String teamName = team.getColor() + team.getName();
+            if (winConditionChecker.isQuidditchMode()) {
+                teamName += ChatColor.GRAY + " (collected " + team.getNumCollected() + " items)";
+            }
+            winningTeamEntry.setValue(teamName);
         }
 
         super.update();
