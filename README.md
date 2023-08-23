@@ -10,6 +10,7 @@ Item bingo in Minecraft
 - Add a "line" mode variant: "quidditch" mode
 - Fix double timer running by entering double `/start` and double game starting
 - Show item collect num for currently winning team (in `quidditch` only)
+- Show num & row collected in tab list
 
 ## What is minecraft bingo?
 Minecraft Bingo is a gamemode in Minecraft in which teams battle in order to collect items on their bingo card.

@@ -21,6 +21,7 @@ import com.extremelyd1.title.TitleManager;
 import com.extremelyd1.util.*;
 import com.extremelyd1.world.WorldManager;
 import com.extremelyd1.world.spawn.SpawnLoader;
+import com.google.common.base.Joiner;
 import org.bukkit.*;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -30,10 +31,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class Game {
@@ -374,6 +372,23 @@ public class Game {
                                 config.getTimerLength(),
                                 timeLeft -> {
                                     gameBoardManager.onTimeUpdate(timeLeft);
+
+                                    // fallen's fork: show num & row collected in tab list
+                                    StringBuilder footer = new StringBuilder();
+                                    int i = 0;
+                                    for (PlayerTeam team : teamManager.getActiveTeams()) {
+                                        if (i > 0) {
+                                            footer.append(ChatColor.GRAY).append(i % 3 == 0 ? "\n" : ", ");
+                                        }
+                                        i++;
+                                        footer.append(team.getColor()).append(team.getName()).append(": ").
+                                                append(bingoCard.getNumLinesComplete(team)).append("/").append(team.getNumCollected());
+                                    }
+                                    for (PlayerTeam team : teamManager.getActiveTeams()) {
+                                        for (Player p : team.getPlayers()) {
+                                            p.setPlayerListFooter(footer.toString());
+                                        }
+                                    }
 
                                     if (timeLeft <= 0) {
                                         WinReason winReason = winConditionChecker.decideWinner(teamManager.getActiveTeams());
