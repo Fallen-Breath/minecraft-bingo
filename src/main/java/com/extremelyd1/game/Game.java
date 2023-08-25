@@ -374,21 +374,7 @@ public class Game {
                                     gameBoardManager.onTimeUpdate(timeLeft);
 
                                     // fallen's fork: show num & row collected in tab list
-                                    StringBuilder footer = new StringBuilder();
-                                    int i = 0;
-                                    for (PlayerTeam team : teamManager.getActiveTeams()) {
-                                        if (i > 0) {
-                                            footer.append(ChatColor.GRAY).append(i % 3 == 0 ? "\n" : ", ");
-                                        }
-                                        i++;
-                                        footer.append(team.getColor()).append(team.getName()).append(": ").
-                                                append(bingoCard.getNumLinesComplete(team)).append("/").append(team.getNumCollected());
-                                    }
-                                    for (PlayerTeam team : teamManager.getActiveTeams()) {
-                                        for (Player p : team.getPlayers()) {
-                                            p.setPlayerListFooter(footer.toString());
-                                        }
-                                    }
+                                    this.showItemCollectedInTabList();
 
                                     if (timeLeft <= 0) {
                                         WinReason winReason = winConditionChecker.decideWinner(teamManager.getActiveTeams());
@@ -408,11 +394,34 @@ public class Game {
         ).start();
     }
 
+    public void showItemCollectedInTabList()
+    {
+        StringBuilder footer = new StringBuilder();
+        int i = 0;
+        for (PlayerTeam team : teamManager.getActiveTeams()) {
+            if (i > 0) {
+                footer.append(ChatColor.GRAY).append(i % 3 == 0 ? "\n" : ", ");
+            }
+            i++;
+            footer.append(team.getColor()).append(team.getName()).append(": ").
+                    append(bingoCard.getNumLinesComplete(team)).append("/").append(team.getNumCollected());
+        }
+        for (PlayerTeam team : teamManager.getActiveTeams()) {
+            for (Player p : team.getPlayers()) {
+                p.setPlayerListFooter(footer.toString());
+            }
+        }
+    }
+
     /**
      * Ends the game with a win reason
      * @param winReason The reason for the game to end
      */
     public void end(WinReason winReason) {
+        // fallen's fork: show num & row collected in tab list
+        // update the tablist on game end
+        this.showItemCollectedInTabList();
+
         String message = DIVIDER + "\n" + PREFIX;
 
         switch (winReason.getReason()) {
