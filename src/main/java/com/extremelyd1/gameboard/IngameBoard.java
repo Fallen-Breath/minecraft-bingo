@@ -1,9 +1,9 @@
 package com.extremelyd1.gameboard;
 
+import com.extremelyd1.config.Config;
 import com.extremelyd1.game.Game;
 import com.extremelyd1.game.team.PlayerTeam;
 import com.extremelyd1.game.team.Team;
-import com.extremelyd1.game.winCondition.WinConditionChecker;
 import com.extremelyd1.gameboard.boardEntry.BlankBoardEntry;
 import com.extremelyd1.gameboard.boardEntry.BoardEntry;
 import com.extremelyd1.gameboard.boardEntry.DynamicBoardEntry;
@@ -33,6 +33,12 @@ public class IngameBoard extends GameBoard {
      * The entry representing the currently winning team
      */
     private final DynamicBoardEntry<String> winningTeamEntry;
+
+    /**
+     * fallen's fork: add "quidditch"
+     * The entry show if the team gets the first bingo, aka the golden snitch
+     */
+    private final DynamicBoardEntry<String> firstBingoEntry;
 
     /**
      * fallen's fork: add "quidditch"
@@ -98,10 +104,13 @@ public class IngameBoard extends GameBoard {
 
         // fallen's fork: add "quidditch" mode
         if (game.getWinConditionChecker().isQuidditchMode()) {
+            firstBingoEntry = new DynamicBoardEntry<>("Got Golden Snitch: %s", ChatColor.GRAY + "NO");
             suddenDeathEntry = new DynamicBoardEntry<>("In Sudden Death: %s", ChatColor.GRAY + "NO");
+            this.boardEntries.add(firstBingoEntry);
             this.boardEntries.add(suddenDeathEntry);
             this.boardEntries.add(new BlankBoardEntry(numberOfSpaces++));
         } else {
+            firstBingoEntry = null;
             suddenDeathEntry = null;
         }
     }
@@ -144,7 +153,21 @@ public class IngameBoard extends GameBoard {
         super.update();
     }
 
-    // fallen's fork: add "quidditch" mode
+    // fallen's fork: add for "quidditch" mode
+    public void updateFirstBingo(PlayerTeam team, Config config) {
+        if (firstBingoEntry == null) {
+            return;
+        }
+
+	    if (team.isFirstBingo()) {
+		    firstBingoEntry.setValue(ChatColor.AQUA + "YES (+" + config.getQuidditchGoldenSnitchExtraScore() + " scores)");
+	    } else {
+		    firstBingoEntry.setValue(ChatColor.GRAY + "NO");
+	    }
+
+	    super.update();
+    }
+
     public void updateSuddenDeath(Game game) {
         if (suddenDeathEntry == null) {
             return;
@@ -155,6 +178,7 @@ public class IngameBoard extends GameBoard {
 
         super.update();
     }
+    // fallen's fork ends
 
     /**
      * Broadcasts this board to all the team's members

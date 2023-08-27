@@ -21,7 +21,6 @@ import com.extremelyd1.title.TitleManager;
 import com.extremelyd1.util.*;
 import com.extremelyd1.world.WorldManager;
 import com.extremelyd1.world.spawn.SpawnLoader;
-import com.google.common.base.Joiner;
 import org.bukkit.*;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -364,6 +363,12 @@ public class Game {
                     // Send sounds
                     soundManager.broadcastStart();
 
+                    // fallen's fork: init teams
+                    for (PlayerTeam team : teamManager.getActiveTeams()) {
+                        // for "quidditch" mode
+                        team.resetIsFirstBingo();
+                    }
+
                     if (config.isTimerEnabled()) {
                         // Start timer
                         gameTimer = new GameTimer(
@@ -394,8 +399,7 @@ public class Game {
         ).start();
     }
 
-    public void showItemCollectedInTabList()
-    {
+    public void showItemCollectedInTabList() {
         StringBuilder footer = new StringBuilder();
         int i = 0;
         for (PlayerTeam team : teamManager.getActiveTeams()) {
@@ -403,7 +407,11 @@ public class Game {
                 footer.append(ChatColor.GRAY).append(i % 3 == 0 ? "\n" : ", ");
             }
             i++;
-            footer.append(team.getColor()).append(team.getName()).append(": ").
+            footer.append(team.getColor()).append(team.getName());
+            if (winConditionChecker.isQuidditchMode() && team.isFirstBingo()) {
+                footer.append("+").append(config.getQuidditchGoldenSnitchExtraScore());
+            }
+            footer.append(": ").
                     append(bingoCard.getNumLinesComplete(team)).append("/").append(team.getNumCollected());
         }
         for (PlayerTeam team : teamManager.getActiveTeams()) {
@@ -588,6 +596,9 @@ public class Game {
             }
 
             config.getProgressController().onCollection(this, collectorTeam, linesCompletedBefore);
+
+            // fallen's fork: add for "quidditch" mode
+            winConditionChecker.onCollection(bingoCard, collectorTeam, teamManager.getActiveTeams(), config);
 
             // Get a list of current winners from the checker
             List<PlayerTeam> winners = winConditionChecker.getCurrentWinners(

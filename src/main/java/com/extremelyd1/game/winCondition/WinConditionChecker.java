@@ -4,13 +4,14 @@ import com.extremelyd1.bingo.BingoCard;
 import com.extremelyd1.bingo.item.BingoItem;
 import com.extremelyd1.config.Config;
 import com.extremelyd1.game.team.PlayerTeam;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static com.extremelyd1.game.Game.PREFIX;
 
 /**
  * A class that stores and handles win conditions
@@ -38,11 +39,18 @@ public class WinConditionChecker {
      */
     private boolean quidditchMode;
 
+    /**
+     * quidditch mode only
+     * How many extra score can a team receive, if the team gets the first "bingo" e.g. required lines collected
+     */
+    private final int quidditchGoldenSnitchExtraScore;
+
     public WinConditionChecker(Config config) {
         this.numLinesToComplete = config.getDefaultNumLinesComplete();
         this.fullCard = false;
         this.completionsToLock = 0;
         this.quidditchMode = config.isDefaultWinConditionIsQuidditch();
+        this.quidditchGoldenSnitchExtraScore = config.getQuidditchGoldenSnitchExtraScore();
     }
 
     /**
@@ -60,9 +68,9 @@ public class WinConditionChecker {
         if (hasBingo(card, team)) {
             // fallen's fork: add "quidditch" mode
             if (isQuidditchMode()) {  // Quidditch Line
-                WinReason reason = this.decideWinner(allTeams);
-                if (reason.getReason() == WinReason.Reason.COMPLETE) {
-                    return Collections.singletonList(reason.getTeam());
+                Optional<PlayerTeam> opt = this.decideQuidditchWinner(allTeams);
+                if (opt.isPresent()) {
+                    return Collections.singletonList(opt.get());
                 }
             } else {  // Line
                 return Collections.singletonList(team);
@@ -72,13 +80,68 @@ public class WinConditionChecker {
         return Collections.emptyList();
     }
 
+    // fallen's fork: add for "quidditch" mode
     public boolean IsInSuddenDeath(BingoCard card, Iterable<PlayerTeam> allTeams) {
         for (PlayerTeam team : allTeams) {
             if (hasBingo(card, team)) {
-                return this.decideWinner(allTeams).getReason() != WinReason.Reason.COMPLETE;
+                return this.decideQuidditchWinner(allTeams).isEmpty();
             }
         }
         return false;
+    }
+
+    // fallen's fork: add for "quidditch" mode
+    public void onCollection(BingoCard card, PlayerTeam collectorTeam, Iterable<PlayerTeam> allTeams, Config config) {
+        // update the first bingo team for "quidditch" mode
+        if (hasBingo(card, collectorTeam)) {
+            boolean firstBingo = true;
+            for (PlayerTeam team : allTeams) {
+                if (hasBingo(card, team) && team != collectorTeam) {
+                    firstBingo = false;
+                    break;
+                }
+            }
+            if (firstBingo) {
+                if (config.notifyOtherTeamCompletions()) {
+                    Bukkit.broadcastMessage(
+                            PREFIX +
+                                    collectorTeam.getColor() + collectorTeam.getName()
+                                    + ChatColor.WHITE + " team gets the Golden Snitch and receives "
+                                    + ChatColor.AQUA + quidditchGoldenSnitchExtraScore + ChatColor.WHITE + " extra score"
+                    );
+                }
+                collectorTeam.setFirstBingo(true);
+            }
+        }
+    }
+
+    /**
+     * {@link #decideWinner}, but for quidditch mode
+     */
+    public Optional<PlayerTeam> decideQuidditchWinner(Iterable<PlayerTeam> teams) {
+        List<PlayerTeam> potentialWinners = new ArrayList<>();
+        int maxScore = 0;
+        for (PlayerTeam team : teams) {
+            int score = team.getNumCollected();
+            if (team.isFirstBingo()) {
+                score += quidditchGoldenSnitchExtraScore;
+            }
+
+            if (score > maxScore) {
+                potentialWinners.clear();
+                maxScore = score;
+            }
+
+            if (score >= maxScore) {
+                potentialWinners.add(team);
+            }
+        }
+
+        if (potentialWinners.size() == 1) {
+            return Optional.of(potentialWinners.get(0));
+        } else {
+            return Optional.empty();
+        }
     }
 
     /**

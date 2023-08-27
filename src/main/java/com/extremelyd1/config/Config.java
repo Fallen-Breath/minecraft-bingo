@@ -122,6 +122,13 @@ public class Config {
      */
     private final boolean defaultWinConditionIsQuidditch;
 
+    /**
+     * [fallen's fork]
+     * quidditch mode only
+     * How many extra score can a team receive, if the team gets the first "bingo" e.g. required lines collected
+     */
+    private final int quidditchGoldenSnitchExtraScore;
+
     public Config(JavaPlugin plugin) throws IllegalArgumentException {
         plugin.saveDefaultConfig();
         
@@ -180,6 +187,7 @@ public class Config {
         autoSaveDisabled = config.getBoolean("auto-save-disabled");
         spawnLocationsChunkLoadingRadius = config.getInt("spawn-locations-chunk-loading-radius");
         defaultWinConditionIsQuidditch = config.getBoolean("default-win-condition-is-quidditch");
+        quidditchGoldenSnitchExtraScore = config.getInt("quidditch-golden-snitch-extra-score");
     }
 
     /**
@@ -297,18 +305,21 @@ public class Config {
         return preGameBorderRadius;
     }
 
-    // fallen's fork
+    // fallen's fork starts
     public boolean isAutoSaveDisabled() {
         return autoSaveDisabled;
     }
 
-      // fallen's fork: add "quidditch" mode
     public int getSpawnLocationsChunkLoadingRadius() {
         return spawnLocationsChunkLoadingRadius;
     }
 
-    // fallen's fork
     public boolean isDefaultWinConditionIsQuidditch() {
         return defaultWinConditionIsQuidditch;
     }
+
+    public int getQuidditchGoldenSnitchExtraScore() {
+        return quidditchGoldenSnitchExtraScore;
+    }
+    // fallen's fork ends
 }

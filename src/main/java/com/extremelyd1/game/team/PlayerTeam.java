@@ -18,6 +18,9 @@ public class PlayerTeam extends Team {
      */
     private Location spawnLocation;
 
+    // fallen's fork: add for "quidditch" mode
+    private boolean isFirstBingo = false;
+
     public PlayerTeam(String name, ChatColor color) {
         super(name, color, false);
     }
@@ -41,4 +44,18 @@ public class PlayerTeam extends Team {
     public void setSpawnLocation(Location spawnLocation) {
         this.spawnLocation = spawnLocation;
     }
+
+    // fallen's fork: add for "quidditch" mode
+    public boolean isFirstBingo() {
+        return isFirstBingo;
+    }
+
+    public void setFirstBingo(boolean firstBingo) {
+        isFirstBingo = firstBingo;
+    }
+
+    public void resetIsFirstBingo() {
+        setFirstBingo(false);
+    }
+    // fallen's fork: add for "quidditch" mode
 }

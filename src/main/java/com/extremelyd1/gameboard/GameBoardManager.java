@@ -91,6 +91,7 @@ public class GameBoardManager {
             }
 
             // fallen's fork: add "quidditch" mode
+            ingameBoards.get(team).updateFirstBingo(team, game.getConfig());
             for (IngameBoard ingameBoard : ingameBoards.values()) {
                 ingameBoard.updateSuddenDeath(game);
             }
