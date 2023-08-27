@@ -7,6 +7,7 @@ import com.extremelyd1.game.winCondition.WinReason;
 import org.bukkit.Bukkit;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class GameBoardManager {
@@ -74,26 +75,32 @@ public class GameBoardManager {
             ingameBoards.get(team).updateNumItems(team.getNumCollected());
 
             if (game.getConfig().showCurrentlyWinningTeam()) {
-                // Obtain a preliminary win reason
-                WinReason winReason = game.getWinConditionChecker().decideWinner(
-                        game.getTeamManager().getActiveTeams()
-                );
 
-                // Based on this win reason update the in-game boards
                 PlayerTeam leadingTeam = null;
-                if (!winReason.getReason().equals(WinReason.Reason.RANDOM_TIE)) {
-                    leadingTeam = winReason.getTeam();
+
+                // fallen's fork: add for "quidditch" mode
+                if (game.getWinConditionChecker().isQuidditchMode()) {
+                    List<PlayerTeam> teams = game.getWinConditionChecker().decideQuidditchWinner(
+                            game.getTeamManager().getActiveTeams()
+                    );
+                    if (teams.size() == 1) {
+                        leadingTeam = teams.get(0);
+                    }
+                } else {
+                    // Obtain a preliminary win reason
+                    WinReason winReason = game.getWinConditionChecker().decideWinner(
+                            game.getTeamManager().getActiveTeams()
+                    );
+
+                    // Based on this win reason update the in-game boards
+                    if (!winReason.getReason().equals(WinReason.Reason.RANDOM_TIE)) {
+                        leadingTeam = winReason.getTeam();
+                    }
                 }
 
                 for (IngameBoard ingameBoard : ingameBoards.values()) {
                     ingameBoard.updateWinningTeam(leadingTeam);
                 }
-            }
-
-            // fallen's fork: add "quidditch" mode
-            ingameBoards.get(team).updateFirstBingo(team, game.getConfig());
-            for (IngameBoard ingameBoard : ingameBoards.values()) {
-                ingameBoard.updateSuddenDeath(game);
             }
         }
     }

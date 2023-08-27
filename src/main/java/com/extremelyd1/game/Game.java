@@ -366,7 +366,7 @@ public class Game {
                     // fallen's fork: init teams
                     for (PlayerTeam team : teamManager.getActiveTeams()) {
                         // for "quidditch" mode
-                        team.resetIsFirstBingo();
+                        team.setGotGoldenSnitch(false);
                     }
 
                     if (config.isTimerEnabled()) {
@@ -407,12 +407,11 @@ public class Game {
                 footer.append(ChatColor.GRAY).append(i % 3 == 0 ? "\n" : ", ");
             }
             i++;
-            footer.append(team.getColor()).append(team.getName());
-            if (winConditionChecker.isQuidditchMode() && team.isFirstBingo()) {
-                footer.append("+").append(config.getQuidditchGoldenSnitchExtraScore());
-            }
-            footer.append(": ").
+            footer.append(team.getColor()).append(team.getName()).append(": ").
                     append(bingoCard.getNumLinesComplete(team)).append("/").append(team.getNumCollected());
+            if (winConditionChecker.isQuidditchMode() && team.isGotGoldenSnitch()) {
+                footer.append(" +").append(config.getQuidditchGoldenSnitchBonus());
+            }
         }
         for (PlayerTeam team : teamManager.getActiveTeams()) {
             for (Player p : team.getPlayers()) {
@@ -573,6 +572,10 @@ public class Game {
         int linesCompletedBefore = bingoCard.getNumLinesComplete(collectorTeam);
 
         if (bingoCard.checkMaterialCollection(material, collectorTeam)) {
+
+            // fallen's fork: add for "quidditch" mode
+            winConditionChecker.onCollection(bingoCard, collectorTeam, teamManager.getActiveTeams());
+
             gameBoardManager.onItemCollected(collectorTeam);
 
             if (config.notifyOtherTeamCompletions()) {
@@ -596,9 +599,6 @@ public class Game {
             }
 
             config.getProgressController().onCollection(this, collectorTeam, linesCompletedBefore);
-
-            // fallen's fork: add for "quidditch" mode
-            winConditionChecker.onCollection(bingoCard, collectorTeam, teamManager.getActiveTeams(), config);
 
             // Get a list of current winners from the checker
             List<PlayerTeam> winners = winConditionChecker.getCurrentWinners(

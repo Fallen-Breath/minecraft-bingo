@@ -127,7 +127,7 @@ public class Config {
      * quidditch mode only
      * How many extra score can a team receive, if the team gets the first "bingo" e.g. required lines collected
      */
-    private final int quidditchGoldenSnitchExtraScore;
+    private final int quidditchGoldenSnitchBonus;
 
     public Config(JavaPlugin plugin) throws IllegalArgumentException {
         plugin.saveDefaultConfig();
@@ -187,7 +187,7 @@ public class Config {
         autoSaveDisabled = config.getBoolean("auto-save-disabled");
         spawnLocationsChunkLoadingRadius = config.getInt("spawn-locations-chunk-loading-radius");
         defaultWinConditionIsQuidditch = config.getBoolean("default-win-condition-is-quidditch");
-        quidditchGoldenSnitchExtraScore = config.getInt("quidditch-golden-snitch-extra-score");
+        quidditchGoldenSnitchBonus = config.getInt("quidditch-golden-snitch-bonus");
     }
 
     /**
@@ -318,8 +318,8 @@ public class Config {
         return defaultWinConditionIsQuidditch;
     }
 
-    public int getQuidditchGoldenSnitchExtraScore() {
-        return quidditchGoldenSnitchExtraScore;
+    public int getQuidditchGoldenSnitchBonus() {
+        return quidditchGoldenSnitchBonus;
     }
     // fallen's fork ends
 }

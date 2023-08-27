@@ -32,4 +32,4 @@ pregame:
 auto-save-disabled: True
 spawn-locations-chunk-loading-radius: 0
 default-win-condition-is-quidditch: False
-quidditch-golden-snitch-extra-score: 1
+quidditch-golden-snitch-bonus: 1

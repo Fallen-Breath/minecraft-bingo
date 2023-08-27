@@ -43,14 +43,14 @@ public class WinConditionChecker {
      * quidditch mode only
      * How many extra score can a team receive, if the team gets the first "bingo" e.g. required lines collected
      */
-    private final int quidditchGoldenSnitchExtraScore;
+    private final int quidditchGoldenSnitchBonus;
 
     public WinConditionChecker(Config config) {
         this.numLinesToComplete = config.getDefaultNumLinesComplete();
         this.fullCard = false;
         this.completionsToLock = 0;
         this.quidditchMode = config.isDefaultWinConditionIsQuidditch();
-        this.quidditchGoldenSnitchExtraScore = config.getQuidditchGoldenSnitchExtraScore();
+        this.quidditchGoldenSnitchBonus = config.getQuidditchGoldenSnitchBonus();
     }
 
     /**
@@ -68,10 +68,7 @@ public class WinConditionChecker {
         if (hasBingo(card, team)) {
             // fallen's fork: add "quidditch" mode
             if (isQuidditchMode()) {  // Quidditch Line
-                Optional<PlayerTeam> opt = this.decideQuidditchWinner(allTeams);
-                if (opt.isPresent()) {
-                    return Collections.singletonList(opt.get());
-                }
+                return this.decideQuidditchWinner(allTeams);
             } else {  // Line
                 return Collections.singletonList(team);
             }
@@ -80,51 +77,45 @@ public class WinConditionChecker {
         return Collections.emptyList();
     }
 
-    // fallen's fork: add for "quidditch" mode
-    public boolean IsInSuddenDeath(BingoCard card, Iterable<PlayerTeam> allTeams) {
-        for (PlayerTeam team : allTeams) {
-            if (hasBingo(card, team)) {
-                return this.decideQuidditchWinner(allTeams).isEmpty();
-            }
-        }
-        return false;
-    }
-
-    // fallen's fork: add for "quidditch" mode
-    public void onCollection(BingoCard card, PlayerTeam collectorTeam, Iterable<PlayerTeam> allTeams, Config config) {
-        // update the first bingo team for "quidditch" mode
+    /**
+     * [fallen's fork]
+     * add early hook
+     */
+    public void onCollection(BingoCard card, PlayerTeam collectorTeam, Iterable<PlayerTeam> allTeams) {
+        // update the GotGoldenSnitch flag for teams
         if (hasBingo(card, collectorTeam)) {
-            boolean firstBingo = true;
+            boolean flag = true;
             for (PlayerTeam team : allTeams) {
-                if (hasBingo(card, team) && team != collectorTeam) {
-                    firstBingo = false;
+                if (team.isGotGoldenSnitch()) {
+                    flag = false;
                     break;
                 }
             }
-            if (firstBingo) {
-                if (config.notifyOtherTeamCompletions()) {
-                    Bukkit.broadcastMessage(
-                            PREFIX +
-                                    collectorTeam.getColor() + collectorTeam.getName()
-                                    + ChatColor.WHITE + " team gets the Golden Snitch and receives "
-                                    + ChatColor.AQUA + quidditchGoldenSnitchExtraScore + ChatColor.WHITE + " extra score"
-                    );
-                }
-                collectorTeam.setFirstBingo(true);
+            if (flag) {
+                collectorTeam.setGotGoldenSnitch(true);
+                Bukkit.broadcastMessage(
+                        PREFIX +
+                                collectorTeam.getColor() + collectorTeam.getName()
+                                + ChatColor.WHITE + " team gets the " + ChatColor.GOLD + "Golden Snitch" + ChatColor.WHITE + " and receives "
+                                + ChatColor.AQUA + quidditchGoldenSnitchBonus + ChatColor.WHITE + " extra scores"
+                );
             }
         }
     }
 
     /**
+     * [fallen's fork]
      * {@link #decideWinner}, but for quidditch mode
      */
-    public Optional<PlayerTeam> decideQuidditchWinner(Iterable<PlayerTeam> teams) {
+    public List<PlayerTeam> decideQuidditchWinner(Iterable<PlayerTeam> teams) {
         List<PlayerTeam> potentialWinners = new ArrayList<>();
         int maxScore = 0;
         for (PlayerTeam team : teams) {
             int score = team.getNumCollected();
-            if (team.isFirstBingo()) {
-                score += quidditchGoldenSnitchExtraScore;
+
+            // fallen's fork: add for "quidditch" mode
+            if (isQuidditchMode() && team.isGotGoldenSnitch()) {
+                score += quidditchGoldenSnitchBonus;
             }
 
             if (score > maxScore) {
@@ -137,11 +128,7 @@ public class WinConditionChecker {
             }
         }
 
-        if (potentialWinners.size() == 1) {
-            return Optional.of(potentialWinners.get(0));
-        } else {
-            return Optional.empty();
-        }
+        return potentialWinners;
     }
 
     /**

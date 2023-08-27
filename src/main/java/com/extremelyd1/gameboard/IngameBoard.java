@@ -34,19 +34,6 @@ public class IngameBoard extends GameBoard {
      */
     private final DynamicBoardEntry<String> winningTeamEntry;
 
-    /**
-     * fallen's fork: add "quidditch"
-     * The entry show if the team gets the first bingo, aka the golden snitch
-     */
-    private final DynamicBoardEntry<String> firstBingoEntry;
-
-    /**
-     * fallen's fork: add "quidditch"
-     * The entry representing if the game is in "sudden death" staet
-     * Available in "quidditch" mode only
-     */
-    private final DynamicBoardEntry<String> suddenDeathEntry;
-
     public IngameBoard(Game game, Team team) {
         super(game);
 
@@ -67,6 +54,11 @@ public class IngameBoard extends GameBoard {
         this.boardEntries.add(new BoardEntry(
                 "Game type: " + ChatColor.YELLOW + formatWinCondition(game.getWinConditionChecker())
         ));
+
+        // fallen's fork: add for "quidditch" mode
+        if (game.getWinConditionChecker().isQuidditchMode()) {
+            this.boardEntries.add(new BoardEntry("Golden Snitch Bonus: " + ChatColor.YELLOW + game.getConfig().getQuidditchGoldenSnitchBonus()));
+        }
 
         if (game.getConfig().isTimerEnabled()) {
             timeLeftEntry = new DynamicBoardEntry<>(
@@ -100,18 +92,6 @@ public class IngameBoard extends GameBoard {
             this.boardEntries.add(new BlankBoardEntry(numberOfSpaces++));
         } else {
             winningTeamEntry = null;
-        }
-
-        // fallen's fork: add "quidditch" mode
-        if (game.getWinConditionChecker().isQuidditchMode()) {
-            firstBingoEntry = new DynamicBoardEntry<>("Got Golden Snitch: %s", ChatColor.GRAY + "NO");
-            suddenDeathEntry = new DynamicBoardEntry<>("In Sudden Death: %s", ChatColor.GRAY + "NO");
-            this.boardEntries.add(firstBingoEntry);
-            this.boardEntries.add(suddenDeathEntry);
-            this.boardEntries.add(new BlankBoardEntry(numberOfSpaces++));
-        } else {
-            firstBingoEntry = null;
-            suddenDeathEntry = null;
         }
     }
 
@@ -152,33 +132,6 @@ public class IngameBoard extends GameBoard {
 
         super.update();
     }
-
-    // fallen's fork: add for "quidditch" mode
-    public void updateFirstBingo(PlayerTeam team, Config config) {
-        if (firstBingoEntry == null) {
-            return;
-        }
-
-	    if (team.isFirstBingo()) {
-		    firstBingoEntry.setValue(ChatColor.AQUA + "YES (+" + config.getQuidditchGoldenSnitchExtraScore() + " scores)");
-	    } else {
-		    firstBingoEntry.setValue(ChatColor.GRAY + "NO");
-	    }
-
-	    super.update();
-    }
-
-    public void updateSuddenDeath(Game game) {
-        if (suddenDeathEntry == null) {
-            return;
-        }
-
-        boolean bl = game.getWinConditionChecker().IsInSuddenDeath(game.getBingoCard(), game.getTeamManager().getActiveTeams());
-        suddenDeathEntry.setValue(bl ? ChatColor.RED + "YES" : ChatColor.GRAY + "NO");
-
-        super.update();
-    }
-    // fallen's fork ends
 
     /**
      * Broadcasts this board to all the team's members
