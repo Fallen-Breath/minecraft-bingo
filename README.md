@@ -9,7 +9,6 @@ Item bingo in Minecraft
 - Add config `spawn-locations-chunk-loading-radius`
 - Add a "line" mode variant: "quidditch" mode
 - Fix double timer running by entering double `/start` and double game starting
-- Show item collect num for currently winning team (in `quidditch` only)
 - Show num & row collected in tab list
 
 ## What is minecraft bingo?

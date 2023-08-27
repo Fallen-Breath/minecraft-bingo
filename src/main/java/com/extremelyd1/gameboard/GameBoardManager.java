@@ -86,7 +86,7 @@ public class GameBoardManager {
                 }
 
                 for (IngameBoard ingameBoard : ingameBoards.values()) {
-                    ingameBoard.updateWinningTeam(leadingTeam, game.getWinConditionChecker());
+                    ingameBoard.updateWinningTeam(leadingTeam);
                 }
             }
 

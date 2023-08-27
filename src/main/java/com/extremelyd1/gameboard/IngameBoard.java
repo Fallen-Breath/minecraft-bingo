@@ -130,7 +130,7 @@ public class IngameBoard extends GameBoard {
      * Updates this board with the currently winning team
      * @param team The currently winning team
      */
-    public void updateWinningTeam(PlayerTeam team, WinConditionChecker winConditionChecker) {
+    public void updateWinningTeam(PlayerTeam team) {
         if (winningTeamEntry == null) {
             return;
         }
@@ -138,11 +138,7 @@ public class IngameBoard extends GameBoard {
         if (team == null) {
             winningTeamEntry.setValue(ChatColor.GRAY + "Tie");
         } else {
-            String teamName = team.getColor() + team.getName();
-            if (winConditionChecker.isQuidditchMode()) {
-                teamName += ChatColor.GRAY + " (collected " + team.getNumCollected() + " items)";
-            }
-            winningTeamEntry.setValue(teamName);
+            winningTeamEntry.setValue(team.getColor() + team.getName());
         }
 
         super.update();
