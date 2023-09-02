@@ -110,9 +110,7 @@ public class WinConditionChecker {
      * {@link #decideWinner}, but for quidditch mode
      */
     public List<PlayerTeam> decideQuidditchWinner(Iterable<PlayerTeam> teams) {
-        List<PlayerTeam> potentialWinners = new ArrayList<>();
-        int maxScore = 0;
-        for (PlayerTeam team : teams) {
+        return findMax(teams, team -> {
             int score = team.getNumCollected();
 
             // fallen's fork: add for "quidditch" mode
@@ -120,17 +118,8 @@ public class WinConditionChecker {
                 score += quidditchGoldenSnitchBonus;
             }
 
-            if (score > maxScore) {
-                potentialWinners.clear();
-                maxScore = score;
-            }
-
-            if (score >= maxScore) {
-                potentialWinners.add(team);
-            }
-        }
-
-        return potentialWinners;
+            return score;
+        });
     }
 
     /**

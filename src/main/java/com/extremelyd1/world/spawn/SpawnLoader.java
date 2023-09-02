@@ -1,6 +1,7 @@
 package com.extremelyd1.world.spawn;
 
 import com.extremelyd1.game.Game;
+import com.extremelyd1.util.Pair;
 import com.extremelyd1.world.WorldManager;
 import com.extremelyd1.world.platform.Environment;
 import org.bukkit.Bukkit;
@@ -160,9 +161,9 @@ public class SpawnLoader implements Listener {
             this.threadCheckTask.cancel();
         }
 
-        this.toBeLoadedChunks = this.foundLocations.size();
-
-        int r = this.game.getConfig().getSpawnLocationsChunkLoadingRadius();  // fallen's fork
+        // fallen's fork: collect chunk pos first, load chunk later
+        int r = this.game.getConfig().getSpawnLocationsChunkLoadingRadius();
+        Set<Pair<Integer, Integer>> chunksToBeLoaded = new LinkedHashSet<>();
 
         for (Location location : this.locations) {
             // Get chunk coordinates of the location
@@ -172,11 +173,15 @@ public class SpawnLoader implements Listener {
             // fallen's fork: load more chunks
             for (int x = chunkX - r; x <= chunkX + r; x++) {
                 for (int z = chunkZ - r; z <= chunkZ + r; z++) {
-					// TODO: fix
-                    Environment.getChunkAtAsync(world, x, z, false).thenAccept(this::onChunkLoad);
+                    chunksToBeLoaded.add(new Pair<>(x, z));
                 }
             }
         }
+
+        this.toBeLoadedChunks = chunksToBeLoaded.size();
+        chunksToBeLoaded.forEach(pair -> {
+            Environment.getChunkAtAsync(world, pair.left(), pair.right(), false).thenAccept(this::onChunkLoad);
+        });
     }
 
     /**
