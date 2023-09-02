@@ -7,12 +7,13 @@ Item bingo in Minecraft
 
 - Add config `auto-save-disabled`
 - Add config `spawn-locations-chunk-loading-radius`
-- Add a "line" mode variant: "quidditch" mode
+- Add a "line" mode variant: "quidditch" mode, with new config `default-win-condition-is-quidditch` and `quidditch-golden-snitch-bonus`
 - Fix double timer running by entering double `/start` and double game starting
 - Show num & row collected of all teams in tab list
 - Improved the `<color> team has obtained <material>` message: make the material name translatable
 - Give bingo cards of all teams to the spectator player
 - Allow spectator team to see the bingo card inventory
+- Add config `allow-mid-game-join` to allow player join in mid-game and join the spectator team
 
 ## What is minecraft bingo?
 Minecraft Bingo is a gamemode in Minecraft in which teams battle in order to collect items on their bingo card.

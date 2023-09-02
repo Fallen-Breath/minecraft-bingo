@@ -707,6 +707,11 @@ public class Game {
         return logger;
     }
 
+    // fallen's fork: allow player join in mid-game - sync scoreboard player list entry
+    public void broadcastGameBoard() {
+        gameBoardManager.broadcast();
+    }
+
     public enum State {
         PRE_GAME("Pre-game"),
         IN_GAME("In-game"),

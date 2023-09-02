@@ -134,6 +134,13 @@ public class Config {
      */
     private final int quidditchGoldenSnitchBonus;
 
+    /**
+     * [fallen's fork]
+     * Allow player join in in-game or post-game state
+     * New players will be assigned to the spectator team
+     */
+    private final boolean allowMidGameJoin;
+
     public Config(JavaPlugin plugin) throws IllegalArgumentException {
         plugin.saveDefaultConfig();
         
@@ -195,6 +202,7 @@ public class Config {
         spawnLocationsChunkLoadingRadius = config.getInt("spawn-locations-chunk-loading-radius");
         defaultWinConditionIsQuidditch = config.getBoolean("default-win-condition-is-quidditch");
         quidditchGoldenSnitchBonus = config.getInt("quidditch-golden-snitch-bonus");
+        allowMidGameJoin = config.getBoolean("allow-mid-game-join");
     }
 
     /**
@@ -333,5 +341,10 @@ public class Config {
     public int getQuidditchGoldenSnitchBonus() {
         return quidditchGoldenSnitchBonus;
     }
+
+    public boolean isAllowMidGameJoin() {
+        return allowMidGameJoin;
+    }
+
     // fallen's fork ends
 }
