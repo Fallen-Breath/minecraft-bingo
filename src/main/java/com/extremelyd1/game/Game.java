@@ -438,6 +438,9 @@ public class Game {
                 p.setPlayerListFooter(footer.toString());
             }
         }
+        for (Player p : teamManager.getSpectatorTeam().getPlayers()) {
+            p.setPlayerListFooter(footer.toString());
+        }
     }
 
     /**
