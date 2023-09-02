@@ -77,6 +77,11 @@ public class Config {
     private final boolean giveAllRecipes;
 
     /**
+     * The time to freeze players when the game starts to allow clients to load chunks.
+     */
+    private final int freezeTimeOnStart;
+
+    /**
      * Store progression notify config data
      */
     private final ProgressController progressController;
@@ -165,6 +170,8 @@ public class Config {
 
         giveAllRecipes = config.getBoolean("give-all-recipes");
 
+        freezeTimeOnStart = config.getInt("freeze-time-on-start");
+
         progressController = new ProgressController(config);
 
         borderEnabled = config.getBoolean("border.enable");
@@ -207,6 +214,7 @@ public class Config {
         return progressController;
     }
 
+    // TODO: not used at the moment, make sure it is used when the blacklist is applied
     public boolean isBlacklistEnabled() {
         return enableBlacklist;
     }
@@ -267,6 +275,10 @@ public class Config {
 
     public boolean isGiveAllRecipes() {
         return giveAllRecipes;
+    }
+
+    public int getFreezeTimeOnStart() {
+        return freezeTimeOnStart;
     }
 
     public boolean isBorderEnabled() {
