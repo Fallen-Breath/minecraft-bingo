@@ -355,6 +355,14 @@ public class Game {
 
         for (Player spectatorPlayer : teamManager.getSpectatorTeam().getPlayers()) {
             spectatorPlayer.setGameMode(GameMode.SPECTATOR);
+
+            // fallen's fork: give bingo cards of all teams to the spectator player
+            for (PlayerTeam team : teamManager.getActiveTeams()) {
+                spectatorPlayer.getInventory().addItem(bingoCardItemFactory.create(
+                        bingoCard,
+                        team
+                ));
+            }
         }
 
         titleManager.sendStartTitle();

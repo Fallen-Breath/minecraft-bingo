@@ -11,6 +11,7 @@ Item bingo in Minecraft
 - Fix double timer running by entering double `/start` and double game starting
 - Show num & row collected of all teams in tab list
 - Improved the `<color> team has obtained <material>` message: make the material name translatable
+- Give bingo cards of all teams to the spectator player
 
 ## What is minecraft bingo?
 Minecraft Bingo is a gamemode in Minecraft in which teams battle in order to collect items on their bingo card.
