@@ -21,6 +21,8 @@ import com.extremelyd1.title.TitleManager;
 import com.extremelyd1.util.*;
 import com.extremelyd1.world.WorldManager;
 import com.extremelyd1.world.spawn.SpawnLoader;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -590,11 +592,15 @@ public class Game {
 
             if (config.notifyOtherTeamCompletions()) {
                 // Broadcast a message of this collection
-                Bukkit.broadcastMessage(
-                        PREFIX +
-                                collectorTeam.getColor() + collectorTeam.getName()
-                                + ChatColor.WHITE + " team has obtained "
-                                + ChatColor.AQUA + StringUtil.formatMaterialName(material)
+                Bukkit.getServer().broadcast(
+                        Component.text(
+                                PREFIX +
+                                        collectorTeam.getColor() + collectorTeam.getName()
+                                        + ChatColor.WHITE + " team has obtained "
+                        ).append(
+                                Component.translatable(material.translationKey()).
+                                        color(NamedTextColor.AQUA)
+                        )
                 );
 
                 // Update the cards of all players in all teams
