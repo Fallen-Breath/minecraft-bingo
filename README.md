@@ -5,16 +5,35 @@ Item bingo in Minecraft
 
 ## Changes in fallen's fork
 
-- Add config `auto-save-disabled`
-- Add config `spawn-locations-chunk-loading-radius`
-- Add a "line" mode variant: "quidditch" mode, with new config `default-win-condition-is-quidditch` and `quidditch-golden-snitch-bonus`
-- Fix double timer running by entering double `/start` and double game starting
-- Show num & row collected of all teams in tab list
+### Mechanism Tweaks
+
+- Add config `auto-save-disabled` for re-enabling auto save, to fix infinity memory consuming since loaded chunks cannot be saved
+- Add config `spawn-locations-chunk-loading-radius` to preload more chunks at team's spawn chunk
+- Add config `allow-mid-game-join` to allow player join in mid-game and join the spectator team
+- Add config `allow-spawn-biome-without-tree` to prevent spawning in biome without trees
+
+### Quidditch Mode
+
+Quidditch mode is a special 'lines' mode, where any team completing given amount of lines and triggers the bingo ends the game, 
+but the winner is the team with the most score.
+
+By default, a team's score equals to the amount of items it collects, 
+but the team that triggers the bingo can get a Golden Snitch score bonus (can be modified in config `quidditch-golden-snitch-bonus`)
+
+- Add a "line" mode variant: `quidditch` mode 
+- Add config `default-win-condition-is-quidditch`, to set the default mode from `lines` to `quidditch`
+- Add config `quidditch-golden-snitch-bonus` to adjust the extra bonus for the team who gets bingo (default `1`)
+
+### QOL++
+
+- Show num & row collected of all teams in tab list, so you don't have to count the dots in the bingo card
 - Improved the `<color> team has obtained <material>` message: make the material name translatable
 - Give bingo cards of all teams to the spectator player
 - Allow spectator team to see the bingo card inventory
-- Add config `allow-mid-game-join` to allow player join in mid-game and join the spectator team
-- Add config `allow-spawn-biome-without-tree` to prevent spawning in biome without trees
+
+### Fixes
+
+- Fix double timer running by entering double `/start` and double game starting
 - Fix existing spectator player still being in survival mode when join in mid-game
 
 ## What is minecraft bingo?
@@ -57,8 +76,7 @@ The first time you run the plugin a config file will be generated in `<server>/p
 - `/maintenance` Enable maintenance mode (this will disallow all non-OP players from joining)
 - `/wincondition <full|lines|quidditch|lockout> [number]` Change the wincondition to either a full card, a number of lines (rows, columns or diagonals) to complete in order to win or lockout. 
   In case of 'lines' or 'lockout' you can specify a number to indicate how many lines needed to be completed, or after how many collections an item locks.  
-  'quidditch' is a special 'lines' mode, where any team completing given amount of lines and triggers the bingo ends the game, but the winner is the team with the most score.
-  By default, a team's score equals to the amount of items it collects, but the team that triggers the bingo can get a Golden Snitch score bonus (default `1`, can be modified in config `quidditch-golden-snitch-bonus`)
+  For 'quidditch' mode, see the [Quidditch Mode](#quidditch-mode) section above.
   (alias: `/wincon`)
 - `/itemdistribution <S> <A> <B> <C> <D>` Change the item distribution scales, the number of S, A, B, C, and D tier items that appear on the bingo card. 
   These numbers must add up to 25. (aliases: `/itemdist`, `/distribution`, `/dist`)
