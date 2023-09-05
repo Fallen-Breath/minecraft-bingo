@@ -171,6 +171,7 @@ public class Game {
      * @param plugin The plugin instance to register the listeners to
      */
     private void registerListeners(JavaPlugin plugin) {
+        Bukkit.getPluginManager().registerEvents(this.worldManager, plugin);
         Bukkit.getPluginManager().registerEvents(new PlayerJoinLeaveListener(this), plugin);
         Bukkit.getPluginManager().registerEvents(new ItemListener(this), plugin);
         Bukkit.getPluginManager().registerEvents(new ChatListener(this), plugin);
@@ -371,7 +372,7 @@ public class Game {
         worldManager.onGameStart();
 
         // Enable scoreboards
-        gameBoardManager.createIngameBoards(teamManager.getActiveTeams());
+        gameBoardManager.createInGameBoards(teamManager.getActiveTeams());
         gameBoardManager.createSpectatorBoard(teamManager.getSpectatorTeam());
         gameBoardManager.broadcast();
 
@@ -613,7 +614,11 @@ public class Game {
                                         color(NamedTextColor.AQUA)
                         )
                 );
+            }
 
+            if (config.notifyOtherTeamCompletions() ||
+                    (winConditionChecker.getCompletionsToLock() > 0 && bingoCard.isItemLocked(material))
+            ) {
                 // Update the cards of all players in all teams
                 for (PlayerTeam playerTeam : teamManager.getActiveTeams()) {
                     ItemUtil.updateBingoCard(bingoCard, playerTeam, bingoCardItemFactory);
@@ -621,8 +626,6 @@ public class Game {
             } else {
                 // Update only the bingo card of the players in the team that collected the item
                 ItemUtil.updateBingoCard(bingoCard, collectorTeam, bingoCardItemFactory);
-                // TODO: also might need to update other cards if lockout is enabled and this item is now locked
-                // for other teams
             }
 
             config.getProgressController().onCollection(this, collectorTeam, linesCompletedBefore);
@@ -660,6 +663,10 @@ public class Game {
 
     public Config getConfig() {
         return config;
+    }
+
+    public GameBoardManager getGameBoardManager() {
+        return gameBoardManager;
     }
 
     public TeamManager getTeamManager() {
