@@ -99,16 +99,20 @@ public class PlayerJoinLeaveListener implements Listener {
             game.getTeamManager().addPlayerToTeam(player, game.getTeamManager().getSpectatorTeam(), false);
 
             team = game.getTeamManager().getSpectatorTeam();
+        }
 
-            // fallen's fork: allow player join in mid-game
-            if (!game.getState().equals(Game.State.PRE_GAME)) {
-                player.setGameMode(GameMode.SPECTATOR);
-                if (!ItemUtil.hasBingoCard(player)) {
-                    for (PlayerTeam t : game.getTeamManager().getActiveTeams()) {
-                        player.getInventory().addItem(
-                                game.getBingoCardItemFactory().create(game.getBingoCard(), t)
-                        );
-                    }
+        // fallen's fork:
+        // - allow player join in mid-game - set spectator mode
+        // - fix existing spectator player still being in survival mode when join in mid-game
+        if (team.isSpectatorTeam() && !game.getState().equals(Game.State.PRE_GAME)) {
+            player.setGameMode(GameMode.SPECTATOR);
+
+            // fallen's fork: give bingo cards of all teams to the spectator player
+            if (!ItemUtil.hasBingoCard(player)) {
+                for (PlayerTeam t : game.getTeamManager().getActiveTeams()) {
+                    player.getInventory().addItem(
+                            game.getBingoCardItemFactory().create(game.getBingoCard(), t)
+                    );
                 }
             }
         }

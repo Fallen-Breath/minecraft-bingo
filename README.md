@@ -15,6 +15,7 @@ Item bingo in Minecraft
 - Allow spectator team to see the bingo card inventory
 - Add config `allow-mid-game-join` to allow player join in mid-game and join the spectator team
 - Add config `allow-spawn-biome-without-tree` to prevent spawning in biome without trees
+- Fix existing spectator player still being in survival mode when join in mid-game
 
 ## What is minecraft bingo?
 Minecraft Bingo is a gamemode in Minecraft in which teams battle in order to collect items on their bingo card.
