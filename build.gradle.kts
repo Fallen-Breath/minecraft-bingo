@@ -35,5 +35,5 @@ tasks {
 }
 
 group = "com.extremelyd1"
-version = "1.10.0-fallen.4"
+version = "1.10.0-fallen.5"
 description = "MinecraftBingo"
