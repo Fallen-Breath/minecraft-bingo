@@ -41,6 +41,17 @@ public class LocationUtil {
     ));
 
     /**
+     * fallen's fork: prevent spawning in biome without trees
+     */
+    private static final List<Biome> biomesWithoutTrees = new ArrayList<>(Arrays.asList(
+            Biome.BADLANDS,
+            Biome.ERODED_BADLANDS,
+            Biome.DESERT,
+            Biome.MUSHROOM_FIELDS,
+            Biome.ICE_SPIKES
+    ));
+
+    /**
      * Gets a list of a number of random locations on a circle with given center and radius
      * @param center The center of the circle
      * @param numLocations The number of locations to get
@@ -129,6 +140,11 @@ public class LocationUtil {
      */
     public static boolean isValidSpawnBiome(Biome biome) {
         return !invalidSpawnBiomes.contains(biome);
+    }
+
+    // fallen's fork: prevent spawning in biome without trees
+    public static boolean isBiomeWithTree(Biome biome) {
+        return !biomesWithoutTrees.contains(biome);
     }
 
     /**

@@ -96,6 +96,9 @@ public class SpawnLoader implements Listener {
                 SpawnFindThread findThread = new SpawnFindThread(
                         location,
                         searchWidth
+
+                        // fallen's fork: prevent spawning in biome without trees
+                        , game.getConfig().isAllowSpawnBiomeWithoutTree()
                 );
 
                 findThread.start();

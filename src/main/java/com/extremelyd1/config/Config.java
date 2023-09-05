@@ -141,6 +141,13 @@ public class Config {
      */
     private final boolean allowMidGameJoin;
 
+    /**
+     * [fallen's fork]
+     * Control whether biomes without trees are valid spawn biomes
+     * Default: true, the same behavior as upstream bingo
+     */
+    private final boolean allowSpawnBiomeWithoutTree;
+
     public Config(JavaPlugin plugin) throws IllegalArgumentException {
         plugin.saveDefaultConfig();
         
@@ -203,6 +210,7 @@ public class Config {
         defaultWinConditionIsQuidditch = config.getBoolean("default-win-condition-is-quidditch");
         quidditchGoldenSnitchBonus = config.getInt("quidditch-golden-snitch-bonus");
         allowMidGameJoin = config.getBoolean("allow-mid-game-join");
+        allowSpawnBiomeWithoutTree = config.getBoolean("allow-spawn-biome-without-tree");
     }
 
     /**
@@ -346,5 +354,8 @@ public class Config {
         return allowMidGameJoin;
     }
 
+    public boolean isAllowSpawnBiomeWithoutTree() {
+        return allowSpawnBiomeWithoutTree;
+    }
     // fallen's fork ends
 }

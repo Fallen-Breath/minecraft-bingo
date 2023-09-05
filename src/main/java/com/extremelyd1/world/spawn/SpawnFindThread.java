@@ -30,7 +30,15 @@ public class SpawnFindThread extends Thread {
      */
     private Location foundLocation;
 
-    public SpawnFindThread(Location location, int maxSearchWidth) {
+    // fallen's fork: prevent spawning in biome without trees
+    private boolean allowSpawnBiomeWithoutTree;
+
+    public SpawnFindThread(
+            Location location, int maxSearchWidth,
+
+            // fallen's fork: prevent spawning in biome without trees
+            boolean allowSpawnBiomeWithoutTree
+    ) {
         this.startLocation = location;
         // Create spiral to find valid spawn
         this.spiral = new Spiral(location);
@@ -43,6 +51,9 @@ public class SpawnFindThread extends Thread {
         } else {
             this.done = false;
         }
+
+        // fallen's fork: prevent spawning in biome without trees
+        this.allowSpawnBiomeWithoutTree = allowSpawnBiomeWithoutTree;
     }
 
     @Override
@@ -80,7 +91,11 @@ public class SpawnFindThread extends Thread {
                 return;
             }
 
-            if (LocationUtil.isValidSpawnBiome(newChunkCoords.getBiome())) {
+            // fallen's fork: prevent spawning in biome without trees
+            boolean ok = LocationUtil.isValidSpawnBiome(newChunkCoords.getBiome());
+            ok &= this.allowSpawnBiomeWithoutTree || LocationUtil.isBiomeWithTree(newChunkCoords.getBiome());
+
+            if (ok) {
                 // Now find a suitable block location inside the found chunk
                 int startX = newChunkCoords.getX() * 16;
                 int startZ = newChunkCoords.getZ() * 16;
