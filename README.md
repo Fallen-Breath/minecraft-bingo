@@ -29,7 +29,10 @@ but the team that triggers the bingo can get a Golden Snitch score bonus (can be
 - Show num & row collected of all teams in tab list, so you don't have to count the dots in the bingo card
 - Improved the `<color> team has obtained <material>` message: make the material name translatable
 - Give bingo cards of all teams to the spectator player
-- Allow spectator team to see the bingo card inventory
+- Allow spectator team to see the bingo card inventory by clicking blocks with bingo card
+- Better bingo item display in bingo card
+  - Show collector team names in item hover texts
+  - Show collector team amount with item count (`count = 10 + n`, iff. `n > 0`)
 
 ### Fixes
 

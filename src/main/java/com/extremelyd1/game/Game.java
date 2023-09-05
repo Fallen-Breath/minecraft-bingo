@@ -655,6 +655,9 @@ public class Game {
         // fallen's fork: show num & row collected in tab list
         // update the tablist on game end
         this.showItemCollectedInTabList();
+
+        // fallen's fork: better bingo item display
+        bingoCard.getBingoCardInventory().rebuildInventory();
     }
 
     public State getState() {
