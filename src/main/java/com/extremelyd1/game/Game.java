@@ -352,6 +352,11 @@ public class Game {
                     recipeUtil.discoverAllRecipes(teamPlayer);
                 }
             }
+
+            // fallen's fork: reset player time since reset stat on game start
+            for (UUID uuid : team.getUUIDs()) {
+                Bukkit.getServer().getOfflinePlayer(uuid).setStatistic(Statistic.TIME_SINCE_REST, 0);
+            }
         }
 
         for (Player spectatorPlayer : teamManager.getSpectatorTeam().getPlayers()) {
