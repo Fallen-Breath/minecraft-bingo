@@ -112,9 +112,11 @@ public class WorldManager implements Listener {
 	        }
             world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
-            Game.getLogger().info("Setting nether world border...");
-            setWorldBorder(nether);
-            Game.getLogger().info("Nether border set");
+            if (game.getConfig().isBorderEnabled()) {
+                Game.getLogger().info("Setting nether world border...");
+                setWorldBorder(nether);
+                Game.getLogger().info("Nether border set");
+            }
         } else if (world.getEnvironment().equals(World.Environment.THE_END) && this.end == null) {
             this.end = world;
 
