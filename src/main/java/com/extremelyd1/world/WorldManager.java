@@ -107,7 +107,9 @@ public class WorldManager implements Listener {
         } else if (world.getEnvironment().equals(World.Environment.NETHER) && this.nether == null) {
             this.nether = world;
 
-            world.setAutoSave(false);
+	        if (this.game.getConfig().isAutoSaveDisabled()) {
+                world.setAutoSave(false);
+	        }
             world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
             Game.getLogger().info("Setting nether world border...");
