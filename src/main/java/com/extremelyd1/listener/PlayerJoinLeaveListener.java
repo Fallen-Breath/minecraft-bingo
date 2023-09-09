@@ -99,6 +99,9 @@ public class PlayerJoinLeaveListener implements Listener {
             game.getTeamManager().addPlayerToTeam(player, game.getTeamManager().getSpectatorTeam(), false);
 
             team = game.getTeamManager().getSpectatorTeam();
+
+            // fallen's fork: allow player join in mid-game - sync scoreboard player list entry
+            game.broadcastGameBoard();
         }
 
         // fallen's fork:
