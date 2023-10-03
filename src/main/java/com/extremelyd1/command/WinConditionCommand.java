@@ -172,11 +172,13 @@ public class WinConditionCommand implements TabExecutor {
         }
 
         if (args.length == 1) {
-            return Arrays.asList("full", "lines", "lockout");
+            // fallen's fork: add "quidditch" mode
+            return Arrays.asList("full", "lines", "lockout", "quidditch");
         }
 
         if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("lines")) {
+            // fallen's fork: add "quidditch" mode
+            if (args[0].equalsIgnoreCase("lines") || args[0].equalsIgnoreCase("quidditch")) {
                 List<String> numLines = new ArrayList<>();
                 for (int i = 1; i <= 10; i++) {
                     String s = String.valueOf(i);
