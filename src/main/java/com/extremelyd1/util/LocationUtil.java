@@ -41,7 +41,7 @@ public class LocationUtil {
             Biome.BADLANDS,
             Biome.DESERT,
             Biome.ERODED_BADLANDS,
-            Biome.ICE_SPICKS,
+            Biome.ICE_SPIKES,
             Biome.MUSHROOM_FIELDS
     ));
 
