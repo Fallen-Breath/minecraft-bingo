@@ -37,12 +37,7 @@ public class LocationUtil {
             Biome.LUKEWARM_OCEAN,
             Biome.DEEP_COLD_OCEAN,
             Biome.DEEP_FROZEN_OCEAN,
-            Biome.DEEP_LUKEWARM_OCEAN,
-            Biome.BADLANDS,
-            Biome.DESERT,
-            Biome.ERODED_BADLANDS,
-            Biome.ICE_SPIKES,
-            Biome.MUSHROOM_FIELDS
+            Biome.DEEP_LUKEWARM_OCEAN
     ));
 
     /**
