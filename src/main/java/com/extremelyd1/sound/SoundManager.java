@@ -67,5 +67,16 @@ public class SoundManager {
             );
         }
     }
+    /**
+     * Broadcast the notification sound
+     */
+    public void broadcastnotification(Player player) {
+            player.playSound(
+                    player.getLocation(),
+                    Sound.ENTITY_CAT_AMBIENT,
+                    0.3f,
+                    1f
+            );
+        }
 
 }
