@@ -1,5 +1,6 @@
 package com.extremelyd1.gameboard;
 
+import com.extremelyd1.config.Config;
 import com.extremelyd1.game.Game;
 import com.extremelyd1.game.team.PlayerTeam;
 import com.extremelyd1.game.team.Team;
@@ -54,6 +55,11 @@ public class IngameBoard extends GameBoard {
                 "Game type: " + ChatColor.YELLOW + formatWinCondition(game.getWinConditionChecker())
         ));
 
+        // fallen's fork: add for "quidditch" mode
+        if (game.getWinConditionChecker().isQuidditchMode()) {
+            this.boardEntries.add(new BoardEntry("Golden Snitch Bonus: " + ChatColor.YELLOW + game.getConfig().getQuidditchGoldenSnitchBonus()));
+        }
+
         if (game.getConfig().isTimerEnabled()) {
             timeLeftEntry = new DynamicBoardEntry<>(
                     "Time left: " + ChatColor.YELLOW + "%s",
@@ -83,7 +89,7 @@ public class IngameBoard extends GameBoard {
             this.boardEntries.add(new BoardEntry("Leading team:"));
             winningTeamEntry = new DynamicBoardEntry<>("  %s", ChatColor.GRAY + "Tie");
             this.boardEntries.add(winningTeamEntry);
-            this.boardEntries.add(new BlankBoardEntry(numberOfSpaces));
+            this.boardEntries.add(new BlankBoardEntry(numberOfSpaces++));
         } else {
             winningTeamEntry = null;
         }

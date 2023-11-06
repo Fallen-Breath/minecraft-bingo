@@ -3,6 +3,7 @@ package com.extremelyd1.listener;
 import com.extremelyd1.game.Game;
 import com.extremelyd1.game.team.PlayerTeam;
 import com.extremelyd1.game.team.Team;
+import com.extremelyd1.util.ItemUtil;
 import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -63,6 +64,11 @@ public class PlayerJoinLeaveListener implements Listener {
                 }
             }
 
+            // fallen's fork: allow player join in mid-game
+            if (game.getConfig().isAllowMidGameJoin()) {
+                return;
+            }
+
             e.disallow(
                     AsyncPlayerPreLoginEvent.Result.KICK_OTHER,
                     "Game is currently in progress"
@@ -93,6 +99,25 @@ public class PlayerJoinLeaveListener implements Listener {
             game.getTeamManager().addPlayerToTeam(player, game.getTeamManager().getSpectatorTeam(), false);
 
             team = game.getTeamManager().getSpectatorTeam();
+
+            // fallen's fork: allow player join in mid-game - sync scoreboard player list entry
+            game.broadcastGameBoard();
+        }
+
+        // fallen's fork:
+        // - allow player join in mid-game - set spectator mode
+        // - fix existing spectator player still being in survival mode when join in mid-game
+        if (team.isSpectatorTeam() && !game.getState().equals(Game.State.PRE_GAME)) {
+            player.setGameMode(GameMode.SPECTATOR);
+
+            // fallen's fork: give bingo cards of all teams to the spectator player
+            if (!ItemUtil.hasBingoCard(player)) {
+                for (PlayerTeam t : game.getTeamManager().getActiveTeams()) {
+                    player.getInventory().addItem(
+                            game.getBingoCardItemFactory().create(game.getBingoCard(), t)
+                    );
+                }
+            }
         }
 
         e.setJoinMessage(

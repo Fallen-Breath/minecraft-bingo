@@ -21,6 +21,8 @@ import com.extremelyd1.title.TitleManager;
 import com.extremelyd1.util.*;
 import com.extremelyd1.world.WorldManager;
 import com.extremelyd1.world.spawn.SpawnLoader;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.*;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -30,10 +32,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class Game {
@@ -130,6 +129,12 @@ public class Game {
      * Chat Channel controller
      */
     private final ChatChannelController chatChannelController;
+
+    /**
+     * Adding another "STARTING_GAME" state in {@link State} is too heavy,
+     * so here's a not-elegant workround -- flag
+     */
+    private boolean gameStarting = false;
 
     public Game(Bingo bingo) throws IllegalArgumentException {
         Game.logger = bingo.getLogger();
@@ -249,6 +254,19 @@ public class Game {
 
             return;
         }
+        if (this.gameStarting) {
+            getLogger().warning("Game is starting, please be patient");
+
+            if (player != null) {
+                player.sendMessage(
+                        ChatColor.DARK_RED + "Error: "
+                                + ChatColor.WHITE + "Game is starting, please be patient"
+                );
+            }
+
+            return;
+        }
+        this.gameStarting = true;
 
         // Calculate radius of spawn circle based on whether a border is enabled
         int radius;
@@ -290,6 +308,7 @@ public class Game {
         }
 
         this.state = State.IN_GAME;
+        this.gameStarting = false;
 
         // Create random bingo card
         bingoCard = new BingoCard(bingoItemMaterials.pickMaterials(), winConditionChecker.getCompletionsToLock());
@@ -333,10 +352,23 @@ public class Game {
                     recipeUtil.discoverAllRecipes(teamPlayer);
                 }
             }
+
+            // fallen's fork: reset player time since reset stat on game start
+            for (UUID uuid : team.getUUIDs()) {
+                Bukkit.getServer().getOfflinePlayer(uuid).setStatistic(Statistic.TIME_SINCE_REST, 0);
+            }
         }
 
         for (Player spectatorPlayer : teamManager.getSpectatorTeam().getPlayers()) {
             spectatorPlayer.setGameMode(GameMode.SPECTATOR);
+
+            // fallen's fork: give bingo cards of all teams to the spectator player
+            for (PlayerTeam team : teamManager.getActiveTeams()) {
+                spectatorPlayer.getInventory().addItem(bingoCardItemFactory.create(
+                        bingoCard,
+                        team
+                ));
+            }
         }
 
         titleManager.sendStartTitle();
@@ -359,6 +391,12 @@ public class Game {
         // Send sounds
         soundManager.broadcastStart();
 
+        // fallen's fork: init teams
+        for (PlayerTeam team : teamManager.getActiveTeams()) {
+            // for "quidditch" mode
+            team.setGotGoldenSnitch(false);
+        }
+
         if (config.isTimerEnabled()) {
             // Start timer
             gameTimer = new GameTimer(
@@ -367,6 +405,9 @@ public class Game {
                     config.getTimerLength(),
                     timeLeft -> {
                         gameBoardManager.onTimeUpdate(timeLeft);
+
+                        // fallen's fork: show num & row collected in tab list
+                        this.showItemCollectedInTabList();
 
                         if (timeLeft <= 0) {
                             WinReason winReason = winConditionChecker.decideWinner(teamManager.getActiveTeams(), bingoCard);
@@ -384,11 +425,39 @@ public class Game {
         }
     }
 
+    public void showItemCollectedInTabList() {
+        StringBuilder footer = new StringBuilder();
+        int i = 0;
+        for (PlayerTeam team : teamManager.getActiveTeams()) {
+            if (i > 0) {
+                footer.append(ChatColor.GRAY).append(i % 3 == 0 ? "\n" : ", ");
+            }
+            i++;
+            footer.append(team.getColor()).append(team.getName()).append(": ").
+                    append(bingoCard.getNumLinesComplete(team)).append("/").append(team.getNumCollected());
+            if (winConditionChecker.isQuidditchMode() && team.isGotGoldenSnitch()) {
+                footer.append(" +").append(config.getQuidditchGoldenSnitchBonus());
+            }
+        }
+        for (PlayerTeam team : teamManager.getActiveTeams()) {
+            for (Player p : team.getPlayers()) {
+                p.setPlayerListFooter(footer.toString());
+            }
+        }
+        for (Player p : teamManager.getSpectatorTeam().getPlayers()) {
+            p.setPlayerListFooter(footer.toString());
+        }
+    }
+
     /**
      * Ends the game with a win reason
      * @param winReason The reason for the game to end
      */
     public void end(WinReason winReason) {
+        // fallen's fork: show num & row collected in tab list
+        // update the tablist on game end
+        this.showItemCollectedInTabList();
+
         String message = DIVIDER + "\n" + PREFIX;
 
         switch (winReason.getReason()) {
@@ -532,15 +601,23 @@ public class Game {
         int linesCompletedBefore = bingoCard.getNumLinesComplete(collectorTeam);
 
         if (bingoCard.checkMaterialCollection(material, collectorTeam)) {
+
+            // fallen's fork: add for "quidditch" mode
+            winConditionChecker.onCollection(bingoCard, collectorTeam, teamManager.getActiveTeams());
+
             gameBoardManager.onItemCollected(collectorTeam);
 
             if (config.notifyOtherTeamCompletions()) {
                 // Broadcast a message of this collection
-                Bukkit.broadcastMessage(
-                        PREFIX +
-                                collectorTeam.getColor() + collectorTeam.getName()
-                                + ChatColor.WHITE + " team has obtained "
-                                + ChatColor.AQUA + StringUtil.formatMaterialName(material)
+                Bukkit.getServer().broadcast(
+                        Component.text(
+                                PREFIX +
+                                        collectorTeam.getColor() + collectorTeam.getName()
+                                        + ChatColor.WHITE + " team has obtained "
+                        ).append(
+                                Component.translatable(material.translationKey()).
+                                        color(NamedTextColor.AQUA)
+                        )
                 );
             }
 
@@ -579,6 +656,13 @@ public class Game {
                 );
             }
         }
+
+        // fallen's fork: show num & row collected in tab list
+        // update the tablist on game end
+        this.showItemCollectedInTabList();
+
+        // fallen's fork: better bingo item display
+        bingoCard.getBingoCardInventory().rebuildInventory();
     }
 
     public State getState() {
@@ -643,6 +727,11 @@ public class Game {
 
     public static Logger getLogger() {
         return logger;
+    }
+
+    // fallen's fork: allow player join in mid-game - sync scoreboard player list entry
+    public void broadcastGameBoard() {
+        gameBoardManager.broadcast();
     }
 
     public enum State {

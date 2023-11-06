@@ -4,14 +4,15 @@ import com.extremelyd1.bingo.BingoCard;
 import com.extremelyd1.bingo.item.BingoItem;
 import com.extremelyd1.config.Config;
 import com.extremelyd1.game.team.PlayerTeam;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static com.extremelyd1.game.Game.PREFIX;
 
 /**
  * A class that stores and handles/checks win conditions. Such as needing a full card to win the game or completing
@@ -34,10 +35,24 @@ public class WinConditionChecker {
      */
     private int completionsToLock;
 
+    /**
+     * A variant of the "line" mode
+     * Any team completing given lines ends the game, but the winner is the team who collect the most items
+     */
+    private boolean quidditchMode;
+
+    /**
+     * quidditch mode only
+     * How many extra score can a team receive, if the team gets the first "bingo" e.g. required lines collected
+     */
+    private final int quidditchGoldenSnitchBonus;
+
     public WinConditionChecker(Config config) {
         this.numLinesToComplete = config.getDefaultNumLinesComplete();
         this.fullCard = false;
         this.completionsToLock = 0;
+        this.quidditchMode = config.isDefaultWinConditionIsQuidditch();
+        this.quidditchGoldenSnitchBonus = config.getQuidditchGoldenSnitchBonus();
     }
 
     /**
@@ -53,10 +68,58 @@ public class WinConditionChecker {
         }
 
         if (hasBingo(card, team)) {
-            return Collections.singletonList(team);
+            // fallen's fork: add "quidditch" mode
+            if (isQuidditchMode()) {  // Quidditch Line
+                return this.decideQuidditchWinner(allTeams);
+            } else {  // Line
+                return Collections.singletonList(team);
+            }
         }
 
         return Collections.emptyList();
+    }
+
+    /**
+     * [fallen's fork]
+     * add early hook
+     */
+    public void onCollection(BingoCard card, PlayerTeam collectorTeam, Iterable<PlayerTeam> allTeams) {
+        // update the GotGoldenSnitch flag for teams
+        if (hasBingo(card, collectorTeam)) {
+            boolean flag = true;
+            for (PlayerTeam team : allTeams) {
+                if (team.isGotGoldenSnitch()) {
+                    flag = false;
+                    break;
+                }
+            }
+            if (flag) {
+                collectorTeam.setGotGoldenSnitch(true);
+                Bukkit.broadcastMessage(
+                        PREFIX +
+                                collectorTeam.getColor() + collectorTeam.getName()
+                                + ChatColor.WHITE + " team gets the " + ChatColor.GOLD + "Golden Snitch" + ChatColor.WHITE + " and receives "
+                                + ChatColor.AQUA + quidditchGoldenSnitchBonus + ChatColor.WHITE + " extra scores"
+                );
+            }
+        }
+    }
+
+    /**
+     * [fallen's fork]
+     * {@link #decideWinner}, but for quidditch mode
+     */
+    public List<PlayerTeam> decideQuidditchWinner(Iterable<PlayerTeam> teams) {
+        return findMax(teams, team -> {
+            int score = team.getNumCollected();
+
+            // fallen's fork: add for "quidditch" mode
+            if (isQuidditchMode() && team.isGotGoldenSnitch()) {
+                score += quidditchGoldenSnitchBonus;
+            }
+
+            return score;
+        });
     }
 
     /**
@@ -201,7 +264,7 @@ public class WinConditionChecker {
      * Sets the number of lines to complete in order to win.
      * @param numLinesToComplete The number of lines to complete; must be between 1 (inclusive) and 10 (inclusive).
      */
-    public void setNumLinesToComplete(int numLinesToComplete) {
+    public void setNumLinesToComplete(int numLinesToComplete, boolean quidditchMode) {
         if (numLinesToComplete < 1 || numLinesToComplete > 10) {
             throw new IllegalArgumentException("Cannot set number of lines completed to less than 1 or more than 10");
         }
@@ -209,16 +272,30 @@ public class WinConditionChecker {
         this.fullCard = false;
         this.completionsToLock = 0;
         this.numLinesToComplete = numLinesToComplete;
+        this.quidditchMode = quidditchMode;
+    }
+
+    /**
+     * Sets the number of lines to complete in order to win
+     * @param numLinesToComplete The number of lines to complete; must be between 1 (inclusive) and 10 (inclusive)
+     */
+    public void setNumLinesToComplete(int numLinesToComplete) {
+        this.setNumLinesToComplete(numLinesToComplete, false);
     }
 
     public int getNumLinesToComplete() {
         return numLinesToComplete;
     }
 
+    public boolean isQuidditchMode() {
+        return quidditchMode;
+    }
+
     public void setFullCard() {
         this.completionsToLock = 0;
         this.numLinesToComplete = 0;
         this.fullCard = true;
+        this.quidditchMode = false;
     }
 
     public boolean isFullCard() {
@@ -233,5 +310,6 @@ public class WinConditionChecker {
         this.fullCard = false;
         this.numLinesToComplete = 0;
         this.completionsToLock = completionsToLock;
+        this.quidditchMode = false;
     }
 }

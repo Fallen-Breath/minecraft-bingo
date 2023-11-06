@@ -76,7 +76,10 @@ public class WorldManager implements Listener {
         if (world.getEnvironment().equals(World.Environment.NORMAL) && this.world == null) {
             this.world = world;
 
-            world.setAutoSave(false);
+	        // fallen's fork
+	        if (this.game.getConfig().isAutoSaveDisabled()) {
+	            world.setAutoSave(false);
+	        }
             world.setGameRule(GameRule.DO_MOB_SPAWNING, false);
             world.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false);
             world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
@@ -104,12 +107,16 @@ public class WorldManager implements Listener {
         } else if (world.getEnvironment().equals(World.Environment.NETHER) && this.nether == null) {
             this.nether = world;
 
-            world.setAutoSave(false);
+	        if (this.game.getConfig().isAutoSaveDisabled()) {
+                world.setAutoSave(false);
+	        }
             world.setGameRule(GameRule.ANNOUNCE_ADVANCEMENTS, false);
 
-            Game.getLogger().info("Setting nether world border...");
-            setWorldBorder(nether);
-            Game.getLogger().info("Nether border set");
+            if (game.getConfig().isBorderEnabled()) {
+                Game.getLogger().info("Setting nether world border...");
+                setWorldBorder(nether);
+                Game.getLogger().info("Nether border set");
+            }
         } else if (world.getEnvironment().equals(World.Environment.THE_END) && this.end == null) {
             this.end = world;
 

@@ -18,6 +18,9 @@ public class PlayerTeam extends Team {
      */
     private Location spawnLocation;
 
+    // fallen's fork: add for "quidditch" mode
+    private boolean gotGoldenSnitch = false;
+
     public PlayerTeam(String name, ChatColor color) {
         super(name, color, false);
     }
@@ -41,4 +44,14 @@ public class PlayerTeam extends Team {
     public void setSpawnLocation(Location spawnLocation) {
         this.spawnLocation = spawnLocation;
     }
+
+    // fallen's fork: add for "quidditch" mode
+    public boolean isGotGoldenSnitch() {
+        return gotGoldenSnitch;
+    }
+
+    public void setGotGoldenSnitch(boolean gotGoldenSnitch) {
+        this.gotGoldenSnitch = gotGoldenSnitch;
+    }
+    // fallen's fork: add for "quidditch" mode
 }

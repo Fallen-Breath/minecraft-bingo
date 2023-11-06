@@ -1,6 +1,7 @@
 package com.extremelyd1.world.spawn;
 
 import com.extremelyd1.game.Game;
+import com.extremelyd1.util.Pair;
 import com.extremelyd1.world.WorldManager;
 import com.extremelyd1.world.platform.Environment;
 import org.bukkit.Bukkit;
@@ -95,6 +96,9 @@ public class SpawnLoader implements Listener {
                 SpawnFindThread findThread = new SpawnFindThread(
                         location,
                         searchWidth
+
+                        // fallen's fork: prevent spawning in biome without trees
+                        , game.getConfig().isAllowSpawnBiomeWithoutTree()
                 );
 
                 findThread.start();
@@ -160,16 +164,27 @@ public class SpawnLoader implements Listener {
             this.threadCheckTask.cancel();
         }
 
-        this.toBeLoadedChunks = this.foundLocations.size();
+        // fallen's fork: collect chunk pos first, load chunk later
+        int r = this.game.getConfig().getSpawnLocationsChunkLoadingRadius();
+        Set<Pair<Integer, Integer>> chunksToBeLoaded = new LinkedHashSet<>();
 
-        for (Location location : this.foundLocations) {
+        for (Location location : this.locations) {
             // Get chunk coordinates of the location
             int chunkX = (int) Math.floor(location.getX() / 16);
             int chunkZ = (int) Math.floor(location.getZ() / 16);
 
-            // Request the chunk to be loaded with a callback
-            Environment.getChunkAtAsync(world, chunkX, chunkZ, false).thenAccept(this::onChunkLoad);
+            // fallen's fork: load more chunks
+            for (int x = chunkX - r; x <= chunkX + r; x++) {
+                for (int z = chunkZ - r; z <= chunkZ + r; z++) {
+                    chunksToBeLoaded.add(new Pair<>(x, z));
+                }
+            }
         }
+
+        this.toBeLoadedChunks = chunksToBeLoaded.size();
+        chunksToBeLoaded.forEach(pair -> {
+            Environment.getChunkAtAsync(world, pair.left(), pair.right(), false).thenAccept(this::onChunkLoad);
+        });
     }
 
     /**

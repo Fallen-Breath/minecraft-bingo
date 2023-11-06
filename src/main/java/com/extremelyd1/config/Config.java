@@ -109,6 +109,49 @@ public class Config {
      */
     private final int preGameBorderRadius;
 
+    /**
+     * [fallen's fork]
+     * If autosave for all worlds should be disabled
+     * - true: no lag from saving chunks, but chunks are hold in memory, causing memory to increase infinitely
+     */
+    private final boolean autoSaveDisabled;
+
+    /**
+     * [fallen's fork]
+     * Chunks in the given radius of the spawn location of each team will be force-loaded before the game start
+     * radius == 0 means only the spawn location chunk will be loaded
+     * radius == 1 means 3x3 chunks will be loaded
+     */
+    private final int spawnLocationsChunkLoadingRadius;
+
+    /**
+     * [fallen's fork]
+     * A variant of the "line" mode
+     * Any team completing given lines ends the game, but the winner is the team who collect the most items
+     */
+    private final boolean defaultWinConditionIsQuidditch;
+
+    /**
+     * [fallen's fork]
+     * quidditch mode only
+     * How many extra score can a team receive, if the team gets the first "bingo" e.g. required lines collected
+     */
+    private final int quidditchGoldenSnitchBonus;
+
+    /**
+     * [fallen's fork]
+     * Allow player join in in-game or post-game state
+     * New players will be assigned to the spectator team
+     */
+    private final boolean allowMidGameJoin;
+
+    /**
+     * [fallen's fork]
+     * Control whether biomes without trees are valid spawn biomes
+     * Default: true, the same behavior as upstream bingo
+     */
+    private final boolean allowSpawnBiomeWithoutTree;
+
     public Config(JavaPlugin plugin) throws IllegalArgumentException {
         plugin.saveDefaultConfig();
         
@@ -165,6 +208,14 @@ public class Config {
         preGenerateWorlds = borderEnabled && config.getBoolean("pregeneration-mode.enable");
 
         preGameBorderRadius = config.getInt("pregame.border-radius");
+
+        // fallen's fork
+        autoSaveDisabled = config.getBoolean("auto-save-disabled");
+        spawnLocationsChunkLoadingRadius = config.getInt("spawn-locations-chunk-loading-radius");
+        defaultWinConditionIsQuidditch = config.getBoolean("default-win-condition-is-quidditch");
+        quidditchGoldenSnitchBonus = config.getInt("quidditch-golden-snitch-bonus");
+        allowMidGameJoin = config.getBoolean("allow-mid-game-join");
+        allowSpawnBiomeWithoutTree = config.getBoolean("allow-spawn-biome-without-tree");
     }
 
     /**
@@ -289,4 +340,30 @@ public class Config {
     public int getPreGameBorderRadius() {
         return preGameBorderRadius;
     }
+
+    // fallen's fork starts
+    public boolean isAutoSaveDisabled() {
+        return autoSaveDisabled;
+    }
+
+    public int getSpawnLocationsChunkLoadingRadius() {
+        return spawnLocationsChunkLoadingRadius;
+    }
+
+    public boolean isDefaultWinConditionIsQuidditch() {
+        return defaultWinConditionIsQuidditch;
+    }
+
+    public int getQuidditchGoldenSnitchBonus() {
+        return quidditchGoldenSnitchBonus;
+    }
+
+    public boolean isAllowMidGameJoin() {
+        return allowMidGameJoin;
+    }
+
+    public boolean isAllowSpawnBiomeWithoutTree() {
+        return allowSpawnBiomeWithoutTree;
+    }
+    // fallen's fork ends
 }

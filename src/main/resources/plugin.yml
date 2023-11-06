@@ -1,5 +1,5 @@
 name: MinecraftBingo
-version: 1.10.0
+version: 1.10.0-fallen.6
 main: com.extremelyd1.main.Bingo
 author: Extremelyd1
 load: STARTUP
@@ -37,7 +37,7 @@ commands:
   wincondition:
     aliases: [wincon]
     description: Command to change win conditions, such as enabling full card mode
-    usage: /<command> <full|lines|lockout> [argument]
+    usage: /<command> <full|lines|quidditch|lockout> [argument]
 
   reroll:
     description: Command to reroll the bingo card

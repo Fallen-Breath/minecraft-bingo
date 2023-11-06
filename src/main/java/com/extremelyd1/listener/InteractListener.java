@@ -139,7 +139,7 @@ public class InteractListener implements Listener {
         }
 
         Team team = game.getTeamManager().getTeamByPlayer(e.getPlayer());
-        if (team == null || team.isSpectatorTeam()) {
+        if (team == null) {  // fallen's fork: allow spectator team to see the bingo card inventory
             return;
         }
 

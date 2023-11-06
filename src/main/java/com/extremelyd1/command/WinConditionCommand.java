@@ -61,7 +61,7 @@ public class WinConditionCommand implements TabExecutor {
             game.onPregameUpdate();
 
             return true;
-        } else if (args[0].equalsIgnoreCase("lines")) {
+        } else if (args[0].equalsIgnoreCase("lines") || args[0].equalsIgnoreCase("quidditch")) {  // fallen's fork: add "quidditch" mode
             if (args.length < 2) {
                 sender.sendMessage(
                         ChatColor.DARK_RED + "Error: "
@@ -96,7 +96,8 @@ public class WinConditionCommand implements TabExecutor {
                 return true;
             }
 
-            game.getWinConditionChecker().setNumLinesToComplete(numLines);
+            // fallen's fork: add "quidditch" mode
+            game.getWinConditionChecker().setNumLinesToComplete(numLines, args[0].equalsIgnoreCase("quidditch"));
 
             Bukkit.broadcastMessage(
                     Game.PREFIX + "Number of lines (rows, columns or diagonals) to achieve bingo has been set to "
@@ -171,11 +172,13 @@ public class WinConditionCommand implements TabExecutor {
         }
 
         if (args.length == 1) {
-            return Arrays.asList("full", "lines", "lockout");
+            // fallen's fork: add "quidditch" mode
+            return Arrays.asList("full", "lines", "lockout", "quidditch");
         }
 
         if (args.length == 2) {
-            if (args[0].equalsIgnoreCase("lines")) {
+            // fallen's fork: add "quidditch" mode
+            if (args[0].equalsIgnoreCase("lines") || args[0].equalsIgnoreCase("quidditch")) {
                 List<String> numLines = new ArrayList<>();
                 for (int i = 1; i <= 10; i++) {
                     String s = String.valueOf(i);
