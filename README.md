@@ -34,6 +34,7 @@ but the team that triggers the bingo can get a Golden Snitch score bonus (can be
   - Show collector team names in item hover texts
   - Show collector team amount with item count (`count = 10 + n`, iff. `n > 0`)
 - Reset player time since reset stat on game start
+- Add in-game notification. When a player right-click or left-click the items displayed in the bingo card inventory, a message when be sent to notify the team.
 
 ### Fixes
 
