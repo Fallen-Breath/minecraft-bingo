@@ -34,9 +34,6 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.Location;
-
-import javax.swing.text.JTextComponent;
 
 public class InteractListener implements Listener {
 
@@ -214,39 +211,36 @@ public class InteractListener implements Listener {
         }
 
         if (e.getView().getTitle().contains("Bingo Card")) {
-            //add note
+
+            // fallen's fork: in-game notification by clicking items in the bingo card, starts
             Team team = game.getTeamManager().getTeamByPlayer(player);
-            Material material = e.getCurrentItem().getType();
-            PlayerTeam playerteam = (PlayerTeam) team;
-            if (e.getClick().equals(ClickType.LEFT)) {
-                for (Player teamPlayer : team.getPlayers()) {
-                    teamPlayer.sendMessage(Component.text(
-                            playerteam.getColor() + player.getName()
-                                    + ChatColor.WHITE + " 认为需要有人来制作 ").append(Component.translatable(material.translationKey()).
-                            color(NamedTextColor.AQUA)));
-                    game.meow(teamPlayer);
+            if (team instanceof PlayerTeam playerteam && e.getCurrentItem() != null) {
+                Material material = e.getCurrentItem().getType();
+                if (e.getClick().equals(ClickType.LEFT)) {
+                    for (Player teamPlayer : team.getPlayers()) {
+                        teamPlayer.sendMessage(
+                                Component.text(playerteam.getColor() + "TEAM " + player.getName() + ChatColor.WHITE + " thinks someone should work on "
+                        ).append(
+                                Component.translatable(material.translationKey()).
+                                        color(NamedTextColor.AQUA)
+                        ));
+                        game.meow(teamPlayer);
+                    }
+                }
+                if (e.getClick().equals(ClickType.RIGHT)) {
+                    for (Player teamPlayer : team.getPlayers()) {
+                        teamPlayer.sendMessage(Component.text(
+                                playerteam.getColor() + "TEAM " + player.getName() + ChatColor.WHITE + " is working on "
+                        ).append(
+                                Component.translatable(material.translationKey()).
+                                        color(NamedTextColor.AQUA)
+                        ));
+                        game.meow(teamPlayer);
+                    }
                 }
             }
-            if (e.getClick().equals(ClickType.RIGHT)) {
-                Location location = player.getLocation();
-                for (Player teamPlayer : team.getPlayers()) {
-                    teamPlayer.sendMessage(Component.text(
-                            playerteam.getColor() + player.getName()
-                                    + ":"+ ChatColor.AQUA + "["
-                                    + Math.round(location.getX()) + ", "
-                                    + Math.round(location.getY()) + ", "
-                                    + Math.round(location.getZ()) + "]"
-                                    + ChatColor.WHITE +" 正在制作 ").append(Component.translatable(material.translationKey()).
-                            color(NamedTextColor.AQUA)));
-                    game.meow(teamPlayer);
-                }
+            // fallen's fork: in-game notification by clicking items in the bingo card, ends
 
-            }
-
-
-
-
-            //note end
             e.setCancelled(true);
             return;
         }

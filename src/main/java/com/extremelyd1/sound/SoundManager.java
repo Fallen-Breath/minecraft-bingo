@@ -67,16 +67,18 @@ public class SoundManager {
             );
         }
     }
+
     /**
      * Broadcast the notification sound
+     * <p>
+     * fallen's fork: in-game notification by clicking items in the bingo card
      */
-    public void broadcastnotification(Player player) {
-            player.playSound(
-                    player.getLocation(),
-                    Sound.ENTITY_CAT_AMBIENT,
-                    0.5f,
-                    1f
-            );
-        }
-
+    public void broadcastNotification(Player player) {
+        player.playSound(
+                player.getLocation(),
+                Sound.ENTITY_CAT_AMBIENT,
+                0.5f,
+                1f
+        );
+    }
 }

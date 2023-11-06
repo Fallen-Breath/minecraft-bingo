@@ -734,6 +734,11 @@ public class Game {
         gameBoardManager.broadcast();
     }
 
+    // fallen's fork: in-game notification by clicking items in the bingo card
+    public void meow(Player player) {
+        soundManager.broadcastNotification(player);
+    }
+
     public enum State {
         PRE_GAME("Pre-game"),
         IN_GAME("In-game"),
@@ -749,5 +754,4 @@ public class Game {
             return name;
         }
     }
-    public void meow(Player player) {soundManager.broadcastnotification(player);}
 }
