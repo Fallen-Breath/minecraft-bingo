@@ -74,7 +74,7 @@ public class SoundManager {
             player.playSound(
                     player.getLocation(),
                     Sound.ENTITY_CAT_AMBIENT,
-                    0.3f,
+                    0.5f,
                     1f
             );
         }
