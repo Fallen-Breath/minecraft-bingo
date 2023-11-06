@@ -749,5 +749,5 @@ public class Game {
             return name;
         }
     }
-
+    public void meow(Player player) {soundManager.broadcastnotification(player);}
 }
