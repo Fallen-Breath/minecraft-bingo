@@ -1,16 +1,21 @@
 package com.extremelyd1.listener;
 
 import com.extremelyd1.game.Game;
+import com.extremelyd1.game.team.PlayerTeam;
 import com.extremelyd1.game.team.Team;
 import com.extremelyd1.util.InventoryUtil;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.RandomizableContainerBlockEntity;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Container;
+import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_20_R1.CraftWorld;
 import org.bukkit.craftbukkit.v1_20_R1.entity.CraftPlayer;
 import org.bukkit.entity.Entity;
@@ -29,6 +34,9 @@ import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.*;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.Location;
+
+import javax.swing.text.JTextComponent;
 
 public class InteractListener implements Listener {
 
@@ -206,6 +214,39 @@ public class InteractListener implements Listener {
         }
 
         if (e.getView().getTitle().contains("Bingo Card")) {
+            //add note
+            Team team = game.getTeamManager().getTeamByPlayer(player);
+            Material material = e.getCurrentItem().getType();
+            PlayerTeam playerteam = (PlayerTeam) team;
+            if (e.getClick().equals(ClickType.LEFT)) {
+                for (Player teamPlayer : team.getPlayers()) {
+                    teamPlayer.sendMessage(Component.text(
+                            playerteam.getColor() + player.getName()
+                                    + ChatColor.WHITE + " 认为需要有人来制作 ").append(Component.translatable(material.translationKey()).
+                            color(NamedTextColor.AQUA)));
+                    game.meow(teamPlayer);
+                }
+            }
+            if (e.getClick().equals(ClickType.RIGHT)) {
+                Location location = player.getLocation();
+                for (Player teamPlayer : team.getPlayers()) {
+                    teamPlayer.sendMessage(Component.text(
+                            playerteam.getColor() + player.getName()
+                                    + ":"+ ChatColor.AQUA + "["
+                                    + Math.round(location.getX()) + ", "
+                                    + Math.round(location.getY()) + ", "
+                                    + Math.round(location.getZ()) + "]"
+                                    + ChatColor.WHITE +" 正在制作 ").append(Component.translatable(material.translationKey()).
+                            color(NamedTextColor.AQUA)));
+                    game.meow(teamPlayer);
+                }
+
+            }
+
+
+
+
+            //note end
             e.setCancelled(true);
             return;
         }
