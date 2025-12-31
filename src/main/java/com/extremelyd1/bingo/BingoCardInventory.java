@@ -52,16 +52,22 @@ public class BingoCardInventory {
                 // fallen's fork: better bingo item display
                 List<PlayerTeam> teams = new ArrayList<>();
                 bingoItems[y][x].getCollectors().forEach(teams::add);
-                List<String> lores = new ArrayList<>();
+                List<Component> lores = new ArrayList<>();
                 if (teams.isEmpty()) {
-                    lores.add(ChatColor.GRAY + "Collected by no team");
+                    lores.add(Component.text("Collected by no team").color(NamedTextColor.GRAY));
                 } else {
-                    lores.add(ChatColor.GRAY + "Collected by:");
+                    var text = Component.text("Collected by:").color(NamedTextColor.GRAY);
                     for (PlayerTeam team : teams) {
-                        lores.add(ChatColor.DARK_GRAY + "- " + team.getColor() + team.getName() + ChatColor.GRAY + " team");
+                        text = text.append(Component
+                                .text("- ")
+                                .color(NamedTextColor.DARK_GRAY)
+                                .append(Component.text(team.getName()).color(team.getColor()))
+                                .append(Component.text(" team").color(NamedTextColor.GRAY))
+                        );
                     }
+                    lores.add(text);
                 }
-                itemStack.setLore(lores);
+                itemStack.lore(lores);
                 if (!teams.isEmpty()) {
                     itemStack.setAmount(teams.size() + 10);
                 }

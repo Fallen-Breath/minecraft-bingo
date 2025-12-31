@@ -215,23 +215,21 @@ public class InteractListener implements Listener {
                 Material material = e.getCurrentItem().getType();
                 if (e.getClick().equals(ClickType.LEFT)) {
                     for (Player teamPlayer : team.getPlayers()) {
-                        teamPlayer.sendMessage(
-                                Component.text(playerteam.getColor() + "TEAM " + player.getName() + ChatColor.WHITE + " thinks someone should work on "
-                        ).append(
-                                Component.translatable(material.translationKey()).
-                                        color(NamedTextColor.AQUA)
-                        ));
+                        teamPlayer.sendMessage(Component
+                                .text( "TEAM " + player.getName()).color(playerteam.getColor())
+                                .append(Component.text(" thinks someone should work on ").color(NamedTextColor.WHITE))
+                                .append(Component.translatable(material.translationKey()).color(NamedTextColor.AQUA))
+                        );
                         game.meow(teamPlayer);
                     }
                 }
                 if (e.getClick().equals(ClickType.RIGHT)) {
                     for (Player teamPlayer : team.getPlayers()) {
-                        teamPlayer.sendMessage(Component.text(
-                                playerteam.getColor() + "TEAM " + player.getName() + ChatColor.WHITE + " is working on "
-                        ).append(
-                                Component.translatable(material.translationKey()).
-                                        color(NamedTextColor.AQUA)
-                        ));
+                        teamPlayer.sendMessage(Component
+                                .text( "TEAM " + player.getName()).color(playerteam.getColor())
+                                .append(Component.text(" is working on ").color(NamedTextColor.WHITE))
+                                .append(Component.translatable(material.translationKey()).color(NamedTextColor.AQUA))
+                        );
                         game.meow(teamPlayer);
                     }
                 }

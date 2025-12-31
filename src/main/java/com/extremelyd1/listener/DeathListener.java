@@ -6,7 +6,6 @@ import com.extremelyd1.game.team.PlayerTeam;
 import com.extremelyd1.game.team.Team;
 import com.extremelyd1.potion.PotionEffects;
 import com.extremelyd1.util.ItemUtil;
-import com.extremelyd1.util.StringUtil;
 import net.kyori.adventure.text.*;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
@@ -160,7 +159,7 @@ public class DeathListener implements Listener {
             }
 
             // fallen's fork: ensure no duplicated bingo card
-            if (!ItemUtil.hasBingoCard(player)) {
+            if (!ItemUtil.hasBingoCard(player, bingoCardItemFactory)) {
                 player.getInventory().addItem(
                         game.getBingoCardItemFactory().create(game.getBingoCard(), playerTeam)
                 );

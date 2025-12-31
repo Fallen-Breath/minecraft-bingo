@@ -1,5 +1,6 @@
 package com.extremelyd1.listener;
 
+import com.extremelyd1.bingo.map.BingoCardItemFactory;
 import com.extremelyd1.game.Game;
 import com.extremelyd1.game.team.PlayerTeam;
 import com.extremelyd1.game.team.Team;
@@ -23,8 +24,14 @@ public class PlayerJoinLeaveListener implements Listener {
      */
     private final Game game;
 
-    public PlayerJoinLeaveListener(Game game) {
+    /**
+     * The bingo card item factory instance to check whether an item is a bingo card.
+     */
+    private final BingoCardItemFactory bingoCardItemFactory;
+
+    public PlayerJoinLeaveListener(Game game, BingoCardItemFactory bingoCardItemFactory) {
         this.game = game;
+	    this.bingoCardItemFactory = bingoCardItemFactory;
     }
 
     @EventHandler
@@ -113,7 +120,7 @@ public class PlayerJoinLeaveListener implements Listener {
             player.setGameMode(GameMode.SPECTATOR);
 
             // fallen's fork: give bingo cards of all teams to the spectator player
-            if (!ItemUtil.hasBingoCard(player)) {
+            if (!ItemUtil.hasBingoCard(player, bingoCardItemFactory)) {
                 for (PlayerTeam t : game.getTeamManager().getActiveTeams()) {
                     player.getInventory().addItem(
                             game.getBingoCardItemFactory().create(game.getBingoCard(), t)

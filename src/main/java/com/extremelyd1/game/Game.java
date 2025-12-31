@@ -168,7 +168,7 @@ public class Game {
      */
     private void registerListeners(JavaPlugin plugin) {
         Bukkit.getPluginManager().registerEvents(this.worldManager, plugin);
-        Bukkit.getPluginManager().registerEvents(new PlayerJoinLeaveListener(this), plugin);
+        Bukkit.getPluginManager().registerEvents(new PlayerJoinLeaveListener(this, bingoCardItemFactory), plugin);
         Bukkit.getPluginManager().registerEvents(new ItemListener(this, bingoCardItemFactory), plugin);
         Bukkit.getPluginManager().registerEvents(new ChatListener(this), plugin);
         Bukkit.getPluginManager().registerEvents(new MotdListener(this), plugin);
@@ -256,9 +256,11 @@ public class Game {
             getLogger().warning("Game is starting, please be patient");
 
             if (player != null) {
-                player.sendMessage(
-                        ChatColor.DARK_RED + "Error: "
-                                + ChatColor.WHITE + "Game is starting, please be patient"
+                player.sendMessage(ChatUtil.errorPrefix()
+                        .append(Component
+                                .text("Game is starting, please be patient")
+                                .color(NamedTextColor.WHITE)
+                        )
                 );
             }
 
@@ -461,26 +463,28 @@ public class Game {
     }
 
     public void showItemCollectedInTabList() {
-        StringBuilder footer = new StringBuilder();
+        var footer = Component.text();
         int i = 0;
         for (PlayerTeam team : teamManager.getActiveTeams()) {
             if (i > 0) {
-                footer.append(ChatColor.GRAY).append(i % 3 == 0 ? "\n" : ", ");
+                footer.append(Component.text(i % 3 == 0 ? "\n" : ", ").color(NamedTextColor.GRAY));
             }
             i++;
-            footer.append(team.getColor()).append(team.getName()).append(": ").
+            StringBuilder builder = new StringBuilder();
+            builder.append(team.getName()).append(": ").
                     append(bingoCard.getNumLinesComplete(team)).append("/").append(team.getNumCollected());
             if (winConditionChecker.isQuidditchMode() && team.isGotGoldenSnitch()) {
-                footer.append(" +").append(config.getQuidditchGoldenSnitchBonus());
+                builder.append(" +").append(config.getQuidditchGoldenSnitchBonus());
             }
+            footer.append(Component.text(builder.toString()).color(team.getColor()));
         }
         for (PlayerTeam team : teamManager.getActiveTeams()) {
             for (Player p : team.getPlayers()) {
-                p.setPlayerListFooter(footer.toString());
+                p.sendPlayerListFooter(footer.build());
             }
         }
         for (Player p : teamManager.getSpectatorTeam().getPlayers()) {
-            p.setPlayerListFooter(footer.toString());
+            p.sendPlayerListFooter(footer.build());
         }
     }
 
@@ -672,7 +676,7 @@ public class Game {
                                 .text(" team has obtained ")
                                 .color(NamedTextColor.WHITE))
                         .append(Component
-                                .text(Component.translatable(material.translationKey()))
+                                .translatable(material.translationKey())
                                 .color(NamedTextColor.AQUA)
                         )
                 );
@@ -731,15 +735,10 @@ public class Game {
 
         if (config.notifyOtherTeamCompletions()) {
             // Broadcast a message of this collection
-            Bukkit.getServer().broadcast(
-                    Component.text(
-                            PREFIX +
-                                    team.getColor() + team.getName()
-                                    + ChatColor.WHITE + " team has dropped "
-                    ).append(
-                            Component.translatable(material.translationKey()).
-                                    color(NamedTextColor.AQUA)
-                    )
+            Bukkit.getServer().broadcast(Component
+                    .text(team.getName()).color(team.getColor())
+                    .append(Component.text(" team has dropped ").color(NamedTextColor.WHITE))
+                    .append(Component.translatable(material.translationKey()).color(NamedTextColor.AQUA))
             );
         }
 

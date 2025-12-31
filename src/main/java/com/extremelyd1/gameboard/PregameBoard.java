@@ -85,9 +85,15 @@ public class PregameBoard extends GameBoard {
                 "-"
         );
 
-	    // fallen's fork: add "hold" mode  FIXME
+	    // fallen's fork: add "hold" mode
 	    if (game.getWinConditionChecker().isHoldMode()) {
-		    this.boardEntries.add(new BoardEntry("Hold Mode: " + ChatColor.GOLD + "True"));
+		    new BoardEntry(Component
+                    .text("Hold Mode: ")
+                    .append(Component
+                            .text("True")
+                            .color(NamedTextColor.GOLD)
+                    )
+            );
 	    }
 
         new BlankBoardEntry();
