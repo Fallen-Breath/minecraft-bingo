@@ -5,7 +5,6 @@ import com.extremelyd1.game.chat.ChatChannelController;
 import com.extremelyd1.game.team.Team;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.DisplayInfo;
@@ -74,7 +73,7 @@ public class ChatListener implements Listener {
         Advancement advancement = advancementHolder.value();
 
         // Skip if there is no display info or this advancement shouldn't be announced to chat
-        if (advancement.display().isEmpty() || !advancement.display().get().shouldAnnounceChat()) {
+        if (advancement.display().isEmpty() || !advancement.display().get().announceToChat()) {
             return;
         }
 
@@ -86,19 +85,15 @@ public class ChatListener implements Listener {
         // Get the team for the color
         Team team = game.getTeamManager().getTeamByPlayer(player);
 
-        // Get the NMS ChatFormatting color for the component
-        ChatFormatting chatFormatting = ChatFormatting.getByHexValue(team.getColor().value());
-        if (chatFormatting == null) {
-            Game.getLogger().warning("Could not find matching ChatFormatting for team color: " + team.getColor().value());
-            return;
-        }
-
         // Get the component for formatting the advancement message
-        net.minecraft.network.chat.Component playerNameComponent = serverPlayer.getName().copy().withStyle(chatFormatting);
+        net.minecraft.network.chat.Component playerNameComponent = serverPlayer
+                .getName()
+                .copy()
+                .withColor(team.getColor().value());
 
         // Create NMS chat component with translation key
         MutableComponent mutableComponent = net.minecraft.network.chat.Component.translatable(
-                "chat.type.advancement." + displayInfo.getType().getSerializedName(),
+                "chat.type.advancement." + displayInfo.type().getSerializedName(),
                 playerNameComponent,
                 Advancement.name(advancementHolder)
         );

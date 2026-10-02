@@ -1,7 +1,7 @@
 # Minecraft Bingo
 Item bingo in Minecraft
 
-![Item Bingo](https://i.imgur.com/7qXBAQK.png)
+![Item Bingo](https://i.imgur.com/tRkvs4A.png)
 
 ## Changes in fallen's fork
 

@@ -31,6 +31,10 @@ pregeneration-mode:
   enable: False
 pregame:
   border-radius: 20
+start-kit:
+  enable: False
+  items:
+    - minecraft:cooked_beef 20
 
 # new stuffs in fallen's fork
 auto-save-disabled: True

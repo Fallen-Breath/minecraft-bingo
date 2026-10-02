@@ -78,14 +78,14 @@ public class WorldManager implements Listener {
         if (world.getEnvironment().equals(World.Environment.NORMAL) && this.world == null) {
             this.world = world;
 
-	        // fallen's fork
-	        if (this.game.getConfig().isAutoSaveDisabled()) {
-	            world.setAutoSave(false);
+            // fallen's fork
+            if (this.game.getConfig().isAutoSaveDisabled()) {
+                world.setAutoSave(false);
             }
-            world.setGameRule(GameRules.SPAWN_MOBS, false);  // GameRule.DO_MOB_SPAWNING
-            world.setGameRule(GameRules.ADVANCE_TIME, false);  // GameRule.DO_DAYLIGHT_CYCLE
-            world.setGameRule(GameRules.SHOW_ADVANCEMENT_MESSAGES, false);  // GameRule.ANNOUNCE_ADVANCEMENTS
-            world.setGameRule(GameRules.LOCATOR_BAR, false);  // fallen's fork: 1.21.6+ thing, disable it
+            world.setGameRule(GameRules.SPAWN_MOBS, false);
+            world.setGameRule(GameRules.ADVANCE_TIME, false);
+            world.setGameRule(GameRules.SHOW_ADVANCEMENT_MESSAGES, false);
+            world.setGameRule(GameRules.LOCATOR_BAR, false);  // fallen's fork: disable the locator bar
             world.setTime(0);
 
             // If the server is in pre-generation mode, create manager
@@ -110,11 +110,11 @@ public class WorldManager implements Listener {
         } else if (world.getEnvironment().equals(World.Environment.NETHER) && this.nether == null) {
             this.nether = world;
 
-	        if (this.game.getConfig().isAutoSaveDisabled()) {
+            if (this.game.getConfig().isAutoSaveDisabled()) {
                 world.setAutoSave(false);
-	        }
-            world.setGameRule(GameRules.SHOW_ADVANCEMENT_MESSAGES, false);  // GameRule.ANNOUNCE_ADVANCEMENTS
-            world.setGameRule(GameRules.LOCATOR_BAR, false);  // fallen's fork: 1.21.6+ thing, disable it
+            }
+            world.setGameRule(GameRules.SHOW_ADVANCEMENT_MESSAGES, false);
+            world.setGameRule(GameRules.LOCATOR_BAR, false);  // fallen's fork: disable the locator bar
 
             if (game.getConfig().isBorderEnabled()) {
                 Game.getLogger().info("Setting nether world border...");
@@ -124,8 +124,8 @@ public class WorldManager implements Listener {
         } else if (world.getEnvironment().equals(World.Environment.THE_END) && this.end == null) {
             this.end = world;
 
-            world.setGameRule(GameRules.SHOW_ADVANCEMENT_MESSAGES, false);  // GameRule.ANNOUNCE_ADVANCEMENTS
-            world.setGameRule(GameRules.LOCATOR_BAR, false);  // fallen's fork: 1.21.6+ thing, disable it
+            world.setGameRule(GameRules.SHOW_ADVANCEMENT_MESSAGES, false);
+            world.setGameRule(GameRules.LOCATOR_BAR, false);  // fallen's fork: disable the locator bar
         }
 
         if (!this.game.getGameBoardManager().isInitialized()) {
@@ -267,8 +267,8 @@ public class WorldManager implements Listener {
      * Resets the gamerules of the overworld to default vanilla behaviour
      */
     public void onGameStart() {
-        world.setGameRule(GameRules.SPAWN_MOBS, true);  // GameRule.DO_MOB_SPAWNING
-        world.setGameRule(GameRules.ADVANCE_TIME, true);  // GameRule.DO_DAYLIGHT_CYCLE
+        world.setGameRule(GameRules.SPAWN_MOBS, true);
+        world.setGameRule(GameRules.ADVANCE_TIME, true);
     }
 
     /**

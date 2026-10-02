@@ -106,8 +106,8 @@ public class GameBoardManager {
                     );
 
                     // Based on this win reason update the in-game boards
-                    if (!winReason.getReason().equals(WinReason.Reason.RANDOM_TIE)) {
-                        leadingTeam = winReason.getTeam();
+                    if (!winReason.reason().equals(WinReason.Reason.RANDOM_TIE)) {
+                        leadingTeam = winReason.team();
                     }
                 }
 

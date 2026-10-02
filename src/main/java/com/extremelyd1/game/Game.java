@@ -26,7 +26,11 @@ import io.papermc.paper.command.brigadier.BasicCommand;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Statistic;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.entity.Player;
@@ -188,7 +192,6 @@ public class Game {
      * Register all commands.
      * @param plugin The plugin instance to register the commands to.
      */
-    @SuppressWarnings("UnstableApiUsage")
     private void registerCommands(JavaPlugin plugin) {
         plugin.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, event -> {
             final Game game = this;
@@ -358,6 +361,11 @@ public class Game {
                         team
                 ));
 
+                // Give start kit if enabled
+                if (config.isStartKitEnabled()) {
+                    config.getStartKitItems().forEach(item -> teamPlayer.getInventory().addItem(item));
+                }
+
                 if (config.isGiveAllRecipes()) {
                     recipeUtil.discoverAllRecipes(teamPlayer);
                 }
@@ -502,9 +510,9 @@ public class Game {
 
         Component message = ChatUtil.divider().append(Component.newline());
 
-        message = switch (winReason.getReason()) {
+        message = switch (winReason.reason()) {
             case COMPLETE -> {
-                PlayerTeam team = winReason.getTeam();
+                PlayerTeam team = winReason.team();
                 yield message.append(Component
                         .text(" ".repeat(21) + team.getName())
                         .color(team.getColor())
